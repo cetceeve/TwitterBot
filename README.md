@@ -1,6 +1,6 @@
 # Twitteranalyse
 
-##### Analysieren und Visualisieren von Daten in Tweets
+### Analysieren und Visualisieren von Daten in Tweets
 
 - Programm zur Visualisierung von Daten in Tweets
 - Nutzer kann über eine Maske ein Stichwort festlegen
