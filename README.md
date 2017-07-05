@@ -11,12 +11,16 @@
 
 - _API:_ Felix
 - _Verarbeitung:_ Anna-Lena
-- _Visulalisierung:_ Fabian
+- _Visualisierung:_ Fabian
 
 ### Struktur:
-Hauptprogramm + API + Visualisierung
+
+- Hauptprogramm: index.py
+- API: api.py
+- Visualisierung: visual.py
 
 ### 1. Funktion:
+
 - 1 hashtag suchen
 - Tweets mit Metadaten der letzten 7 Tage sammeln
 - Visualisierung:
