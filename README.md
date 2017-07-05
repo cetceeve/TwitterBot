@@ -15,9 +15,9 @@
 
 ### Struktur:
 
-- Hauptprogramm: index.py
-- API: api.py
-- Visualisierung: visual.py
+- Hauptprogramm: `index.py`
+- API: `api.py`
+- Visualisierung: `visual.py`
 
 ### 1. Funktion:
 
@@ -26,4 +26,4 @@
 - Visualisierung:
   - Menge pro Tag (Histogramm; Menge über Tag)
   - Top 5 Länder (Kreisdiagramm)
-  - Hashtagverbindungen (top 5 der hashtags die zusammen mit dem gesuchten genannt werden)
+  - Hashtagverbindungen (top 5 der hashtags die zusammen mit dem gesuchten genannt werden, BarChart)
