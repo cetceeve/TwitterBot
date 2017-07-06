@@ -3,3 +3,4 @@ import visual
 
 visual.barplot()
 visual.piechart()
+visual.scatterplot()

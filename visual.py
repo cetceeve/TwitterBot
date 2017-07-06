@@ -7,6 +7,8 @@ SAMPLE_LABELS = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So']
 SAMPLE_DATA = [1,2,3,4,5,6,7]
 SAMPLE_LABELS_PIE = ['Norway', 'Sweden', 'Great Britain', 'France',  'Japan']
 SAMPLE_DATA_PIE = [1000, 750, 500, 350, 100]
+SAMPLE_LABELS_SCATTER = np.arange(24*7-1)
+SAMPLE_DATA_SCATTER = np.random.randn(24*7-1)
 
 
 def barplot(labels=SAMPLE_LABELS,data=SAMPLE_DATA):
@@ -26,5 +28,15 @@ def piechart(labels=SAMPLE_LABELS_PIE,data=SAMPLE_DATA_PIE):
 
     ax1.pie(data, labels=labels, autopct='%1.2f%%', shadow=True, startangle=90)
     ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+
+    plt.show()
+
+def scatterplot(labels=SAMPLE_LABELS_SCATTER, data=SAMPLE_DATA_SCATTER):
+    fig, ax = plt.subplots()
+
+    days = np.arange(len(labels))
+    #ax.set_xticks(days)
+    #ax.set_xticklabels(labels)
+    ax.scatter(days,data)
 
     plt.show()
