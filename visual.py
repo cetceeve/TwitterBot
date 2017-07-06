@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 SAMPLE_LABELS = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So']
 SAMPLE_DATA = [1,2,3,4,5,6,7]
@@ -38,5 +39,21 @@ def scatterplot(labels=SAMPLE_LABELS_SCATTER, data=SAMPLE_DATA_SCATTER):
     #ax.set_xticks(days)
     #ax.set_xticklabels(labels)
     ax.scatter(days,data)
+
+    plt.show()
+
+def globalscatter():
+    data = np.genfromtxt('sample_geo_data_V3.csv', delimiter=',')
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+
+    an = np.sin(data[:,1]*(np.pi/180))*10
+    x_array = np.cos(data[:,0]*(np.pi/180))*an
+    y_array = np.sin(data[:,0]*(np.pi/180))*an
+    z_array = np.cos(data[:,1]*(np.pi/180))*10
+    ax.scatter(x_array, y_array, z_array)
+    #ax.axis('equal')
+    ax.set_aspect('equal')
 
     plt.show()
