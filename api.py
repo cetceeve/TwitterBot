@@ -11,9 +11,10 @@ request_token_url = 'https://api.twitter.com/oauth/request_token'
 access_token_url  = 'https://api.twitter.com/oauth/access_token'
 authorize_url     = 'https://api.twitter.com/oauth/authorize'
 
+consumer = oauth.Consumer(CONSUMER_KEY, CONSUMER_SECRET)
+client   = oauth.Client(consumer)
+
 def getAuthLink():
-    consumer = oauth.Consumer(CONSUMER_KEY, CONSUMER_SECRET)
-    client   = oauth.Client(consumer)
     resp, content = client.request(request_token_url, 'GET')
     if resp['status'] != '200':
         raise Exception('Invalid response %s.' % resp['status'])
@@ -31,3 +32,6 @@ def getToken(pin, request_token):
     access_token = dict(urlparse.parse_qsl(content))
 
     return (access_token['oauth_token'], access_token['oauth_token_secret'])
+
+# def GET(token, url, query):
+#     resp, content = clien
