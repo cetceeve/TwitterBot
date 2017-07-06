@@ -44,22 +44,16 @@ def scatterplot(labels=SAMPLE_LABELS_SCATTER, data=SAMPLE_DATA_SCATTER):
     plt.show()
 
 def globalscatter():
-    data = np.genfromtxt('sample_geo_data_large.csv', delimiter=',')
-
-    with open('data.json') as data_file:
-        data_boundries = json.load(data_file)
-
-    #list = data["features"][0]["geometry"]["type"]
-    #array = np.asarray(list)
+    data = np.genfromtxt('global_boundries.csv', delimiter=',')
 
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
 
-    an = np.sin(data[:,1]*(np.pi/180))*10
+    an = np.sin(data[:,1]*(np.pi/180))
     x_array = np.cos(data[:,0]*(np.pi/180))*an
     y_array = np.sin(data[:,0]*(np.pi/180))*an
-    z_array = np.cos(data[:,1]*(np.pi/180))*10
-    ax.scatter(x_array, y_array, z_array, marker='.')
+    z_array = np.cos(data[:,1]*(np.pi/180))
+    ax.scatter(x_array, y_array, z_array, marker='^')
     ax.set_aspect('equal')
 
     plt.show()
