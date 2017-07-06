@@ -3,6 +3,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+import json
 
 SAMPLE_LABELS = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So']
 SAMPLE_DATA = [1,2,3,4,5,6,7]
@@ -45,6 +46,12 @@ def scatterplot(labels=SAMPLE_LABELS_SCATTER, data=SAMPLE_DATA_SCATTER):
 def globalscatter():
     data = np.genfromtxt('sample_geo_data_large.csv', delimiter=',')
 
+    with open('data.json') as data_file:
+        data_boundries = json.load(data_file)
+
+    #list = data["features"][0]["geometry"]["type"]
+    #array = np.asarray(list)
+
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
 
@@ -53,7 +60,6 @@ def globalscatter():
     y_array = np.sin(data[:,0]*(np.pi/180))*an
     z_array = np.cos(data[:,1]*(np.pi/180))*10
     ax.scatter(x_array, y_array, z_array, marker='.')
-    #ax.axis('equal')
     ax.set_aspect('equal')
 
     plt.show()
