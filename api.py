@@ -1,6 +1,7 @@
 # import requests
 import urlparse
 import oauth2 as oauth
+import tweepy
 
 # TODO: Remove these values and ask for user values
 CONSUMER_KEY        = 'eh9cOj5h3W17QpjSY5X21A0CJ'
@@ -13,6 +14,9 @@ authorize_url     = 'https://api.twitter.com/oauth/authorize'
 
 consumer = oauth.Consumer(CONSUMER_KEY, CONSUMER_SECRET)
 client   = oauth.Client(consumer)
+
+auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+api = tweepy.API(auth)
 
 def getAuthLink():
     resp, content = client.request(request_token_url, 'GET')
@@ -31,7 +35,6 @@ def getToken(pin, request_token):
     resp, content = client.request(access_token_url, 'POST')
     access_token = dict(urlparse.parse_qsl(content))
 
-    return (access_token['oauth_token'], access_token['oauth_token_secret'])
+    auth.set_access_token(access_token['oauth_token'], access_token['oauth_token_secret'])
 
-# def GET(token, url, query):
-#     resp, content = clien
+    return (access_token['oauth_token'], access_token['oauth_token_secret'])
