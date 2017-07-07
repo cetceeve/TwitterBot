@@ -13,56 +13,56 @@ SAMPLE_LABELS_SCATTER = np.arange(24*7-1)
 SAMPLE_DATA_SCATTER = np.random.randn(24*7-1)
 SAMPLE_GEO_DATA = np.asarray([[12,125],[89,105],[27,110],[24,113]])
 
+class Visual(object):
+    def barplot(self, labels=SAMPLE_LABELS,data=SAMPLE_DATA):
+        fig, ax = plt.subplots()
 
-def barplot(labels=SAMPLE_LABELS,data=SAMPLE_DATA):
-    fig, ax = plt.subplots()
+        pos=np.arange(len(data))
+        ax.set_xticks(pos)
+        ax.set_xticklabels(labels)
+        ax.bar(pos,data)
+        ax.set_ylabel('Hashtaganzahl')
+        ax.set_title('Hashtag Performance')
 
-    pos=np.arange(len(data))
-    ax.set_xticks(pos)
-    ax.set_xticklabels(labels)
-    ax.bar(pos,data)
-    ax.set_ylabel('Hashtaganzahl')
-    ax.set_title('Hashtag Performance')
+        plt.show()
 
-    plt.show()
+    def piechart(self, labels=SAMPLE_LABELS_PIE,data=SAMPLE_DATA_PIE):
+        fig1, ax1 = plt.subplots()
 
-def piechart(labels=SAMPLE_LABELS_PIE,data=SAMPLE_DATA_PIE):
-    fig1, ax1 = plt.subplots()
+        ax1.pie(data, labels=labels, autopct='%1.2f%%', shadow=True, startangle=90)
+        ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
 
-    ax1.pie(data, labels=labels, autopct='%1.2f%%', shadow=True, startangle=90)
-    ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+        plt.show()
 
-    plt.show()
+    def scatterplot(self, labels=SAMPLE_LABELS_SCATTER, data=SAMPLE_DATA_SCATTER):
+        fig, ax = plt.subplots()
 
-def scatterplot(labels=SAMPLE_LABELS_SCATTER, data=SAMPLE_DATA_SCATTER):
-    fig, ax = plt.subplots()
+        days = np.arange(len(labels))
+        #ax.set_xticks(days)
+        #ax.set_xticklabels(labels)
+        ax.scatter(days,data)
 
-    days = np.arange(len(labels))
-    #ax.set_xticks(days)
-    #ax.set_xticklabels(labels)
-    ax.scatter(days,data)
+        plt.show()
 
-    plt.show()
+    def globalscatter(self, geoData=SAMPLE_GEO_DATA):
+        loadList = ['global_boundries.csv', 'australien.csv']
 
-def globalscatter(geoData=SAMPLE_GEO_DATA):
-    loadList = ['global_boundries.csv', 'australien.csv']
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection='3d')
 
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
+        for i in range(len(loadList)):
+            data = np.genfromtxt(loadList[i], delimiter=',')
+            x_array, y_array, z_array = dataconverter(data)
 
-    for i in range(len(loadList)):
-        data = np.genfromtxt(loadList[i], delimiter=',')
-        x_array, y_array, z_array = dataconverter(data)
+            ax.scatter(x_array, y_array, z_array, c='b', marker='.')
+            ax.plot(x_array, y_array, z_array, c='b')
 
-        ax.scatter(x_array, y_array, z_array, c='b', marker='.')
-        ax.plot(x_array, y_array, z_array, c='b')
+        x_array, y_array, z_array = dataconverter(geoData)
+        ax.scatter(x_array, y_array, z_array, c='r', marker='^')
 
-    x_array, y_array, z_array = dataconverter(geoData)
-    ax.scatter(x_array, y_array, z_array, c='r', marker='^')
-
-    ax.set_aspect('equal')
-    ax.axis('off')
-    plt.show()
+        ax.set_aspect('equal')
+        ax.axis('off')
+        plt.show()
 
 def dataconverter(data):
     an = np.cos(data[:,0]*(np.pi/180))*1

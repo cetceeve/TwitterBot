@@ -1,7 +1,8 @@
 import api
 import visual
 
-#visual.barplot()
-#visual.piechart()
-#visual.scatterplot()
-visual.globalscatter()
+vis = visual.Visual()
+vis.barplot()
+vis.piechart()
+vis.scatterplot()
+vis.globalscatter()
