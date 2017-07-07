@@ -11,6 +11,7 @@ SAMPLE_LABELS_PIE = ['Norway', 'Sweden', 'Great Britain', 'France',  'Japan']
 SAMPLE_DATA_PIE = [1000, 750, 500, 350, 100]
 SAMPLE_LABELS_SCATTER = np.arange(24*7-1)
 SAMPLE_DATA_SCATTER = np.random.randn(24*7-1)
+SAMPLE_GEO_DATA = np.asarray([[12,125],[89,105],[27,110],[24,113]])
 
 
 def barplot(labels=SAMPLE_LABELS,data=SAMPLE_DATA):
@@ -43,7 +44,7 @@ def scatterplot(labels=SAMPLE_LABELS_SCATTER, data=SAMPLE_DATA_SCATTER):
 
     plt.show()
 
-def globalscatter():
+def globalscatter(geoData=SAMPLE_GEO_DATA):
     loadList = ['global_boundries.csv', 'australien.csv']
 
     fig = plt.figure()
@@ -53,10 +54,14 @@ def globalscatter():
         data = np.genfromtxt(loadList[i], delimiter=',')
         x_array, y_array, z_array = dataconverter(data)
 
-        ax.scatter(x_array, y_array, z_array, marker='.')
-        ax.plot(x_array, y_array, z_array)
+        ax.scatter(x_array, y_array, z_array, c='b', marker='.')
+        ax.plot(x_array, y_array, z_array, c='b')
+
+    x_array, y_array, z_array = dataconverter(geoData)
+    ax.scatter(x_array, y_array, z_array, c='r', marker='^')
 
     ax.set_aspect('equal')
+    ax.axis('off')
     plt.show()
 
 def dataconverter(data):
