@@ -23,3 +23,15 @@ Hauptprogramm + API + Visualisierung
   - Menge pro Tag (Histogramm; Menge über Tag)
   - Top 5 Länder (Kreisdiagramm)
   - Hashtagverbindungen (top 5 der hashtags die zusammen mit dem gesuchten genannt werden)
+
+### Authentifizierung
+
+```python
+import api as twitter
+
+#returns two values: link to authorize and auth token
+link, token = twitter.getAuthLink()
+
+#TODO: ask user for pin they got at link
+twitter.getToken(user_pin, token)
+```
