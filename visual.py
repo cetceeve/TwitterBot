@@ -49,11 +49,12 @@ def globalscatter():
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
 
-    an = np.sin(data[:,1]*(np.pi/180))
-    x_array = np.cos(data[:,0]*(np.pi/180))*an
-    y_array = np.sin(data[:,0]*(np.pi/180))*an
-    z_array = np.cos(data[:,1]*(np.pi/180))
-    ax.scatter(x_array, y_array, z_array, marker='^')
+    an = np.cos(data[:,0]*(np.pi/180))*1
+    x_array = np.cos(data[:,1]*(np.pi/180))*an
+    y_array = np.sin(data[:,1]*(np.pi/180))*an
+    z_array = np.sin(data[:,0]*(np.pi/180))*1
+    ax.scatter(x_array, y_array, z_array, marker='.')
+    ax.plot(x_array, y_array, z_array)
     ax.set_aspect('equal')
 
     plt.show()
