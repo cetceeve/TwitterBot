@@ -44,17 +44,24 @@ def scatterplot(labels=SAMPLE_LABELS_SCATTER, data=SAMPLE_DATA_SCATTER):
     plt.show()
 
 def globalscatter():
-    data = np.genfromtxt('global_boundries.csv', delimiter=',')
+    loadList = ['global_boundries.csv', 'australien.csv']
 
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
 
+    for i in range(len(loadList)):
+        data = np.genfromtxt(loadList[i], delimiter=',')
+        x_array, y_array, z_array = dataconverter(data)
+
+        ax.scatter(x_array, y_array, z_array, marker='.')
+        ax.plot(x_array, y_array, z_array)
+
+    ax.set_aspect('equal')
+    plt.show()
+
+def dataconverter(data):
     an = np.cos(data[:,0]*(np.pi/180))*1
     x_array = np.cos(data[:,1]*(np.pi/180))*an
     y_array = np.sin(data[:,1]*(np.pi/180))*an
     z_array = np.sin(data[:,0]*(np.pi/180))*1
-    ax.scatter(x_array, y_array, z_array, marker='.')
-    ax.plot(x_array, y_array, z_array)
-    ax.set_aspect('equal')
-
-    plt.show()
+    return x_array, y_array, z_array
