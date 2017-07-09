@@ -5,3 +5,7 @@ link, token = twitter.getAuthLink()
 pin = input(link + ' : ')
 if twitter.getToken(pin, token):
     print twitter.getTweetsByHashtag('nog20p')
+
+visual.barplot()
+visual.piechart()
+visual.scatterplot()
