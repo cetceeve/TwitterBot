@@ -48,7 +48,7 @@ class Visual(object):
         ax3.scatter(days,data)
 
     def globalscatter(self, geoData=SAMPLE_GEO_DATA):
-        loadList = ['global_boundries.csv', 'australien.csv']
+        loadList = ['america.csv', 'australia.csv', 'africa.csv']
 
         ax4 = plt.subplot2grid((2,6), (0,3), colspan=3, rowspan=3, projection='3d')
 
