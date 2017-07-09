@@ -48,7 +48,7 @@ class Visual(object):
         ax3.scatter(days,data)
 
     def globalscatter(self, geoData=SAMPLE_GEO_DATA):
-        loadList = ['america.csv', 'australia.csv', 'africa.csv', 'antarctica.csv', 'greenland.csv']
+        loadList = ['america.csv', 'australia.csv', 'africa.csv', 'antarctica.csv', 'greenland.csv', 'europe_asia.csv']
 
         ax4 = plt.subplot2grid((2,6), (0,3), colspan=3, rowspan=3, projection='3d')
 
@@ -56,7 +56,7 @@ class Visual(object):
             data = np.genfromtxt(loadList[i], delimiter=',')
             x_array, y_array, z_array = dataconverter(data)
 
-            ax4.scatter(x_array, y_array, z_array, c='b', marker='.')
+            ax4.scatter(x_array, y_array, z_array, c='b', marker='.', s=1)
             ax4.plot(x_array, y_array, z_array, c='b')
 
         x_array, y_array, z_array = dataconverter(geoData)
