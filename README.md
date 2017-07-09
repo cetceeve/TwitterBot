@@ -24,7 +24,7 @@
 - 1 hashtag suchen
 - Tweets mit Metadaten der letzten 7 Tage sammeln
 - Visualisierung:
-  - Menge pro Tag (Histogramm; Menge über Tag)
+  - Menge pro Stunde (Scatter; Menge über Stunde)
   - Top 5 Länder (Kreisdiagramm)
   - Hashtagverbindungen (top 5 der hashtags die zusammen mit dem gesuchten genannt werden)
 
