@@ -24,14 +24,18 @@ Hauptprogramm + API + Visualisierung
   - Top 5 Länder (Kreisdiagramm)
   - Hashtagverbindungen (top 5 der hashtags die zusammen mit dem gesuchten genannt werden)
 
-### Authentifizierung
+### API Usage
 
 ```python
 import api as twitter
 
-#returns two values: link to authorize and auth token
+#Gib einen vorläufigen Token und den Link zur Authentifizierung zurück
 link, token = twitter.getAuthLink()
 
-#TODO: ask user for pin they got at link
+#TODO: Hier muss ein Fenster den Link anzeigen und den Pin abfragen
 twitter.getToken(user_pin, token)
+
+#Anschließend kann die API benutzt werden, es wird ein Objekt übergeben, dass die erwarteten Rückgabewerte beschreibt
+tweets = twitter.getTweetsbyHashtag({'geo' = True, timestamp = True, username = False})
+# => tweets -> [['text': 'abc', 'username': 'test', 'timestamp': 123456, 'geo': 'de'], [...], ...]
 ```
