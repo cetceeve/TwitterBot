@@ -2,10 +2,10 @@ import api as twitter
 import visual
 
 #API
-link, token = twitter.getAuthLink()
-pin = input(link + ' : ')
-if twitter.getToken(pin, token):
-    print twitter.getTweetsByHashtag('nog20p')
+#link, token = twitter.getAuthLink()
+#pin = input(link + ' : ')
+#if twitter.getToken(pin, token):
+#    print twitter.getTweetsByHashtag('nog20p')
 
 #Visualisierung
 vis = visual.Visual()
