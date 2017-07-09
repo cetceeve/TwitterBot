@@ -4,4 +4,4 @@ import visual
 link, token = twitter.getAuthLink()
 pin = input(link + ' : ')
 if twitter.getToken(pin, token):
-    print twitter.getTweetsByHashtag('nog20p')
+    print 'Your name is: ' + twitter.api.me().screen_name
