@@ -7,6 +7,9 @@ import tweepy
 CONSUMER_KEY        = 'eh9cOj5h3W17QpjSY5X21A0CJ'
 CONSUMER_SECRET     = 'neN3X6D8pk54pzo996nGOXeoMLFywi2QTWDe7JEdqzxSB6HDV7'
 
+auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+api = tweepy.API(auth)
+
 # URLs
 request_token_url = 'https://api.twitter.com/oauth/request_token'
 access_token_url  = 'https://api.twitter.com/oauth/access_token'
@@ -32,7 +35,9 @@ def getToken(pin, request_token):
     resp, content = client.request(access_token_url, 'POST')
     access_token = dict(urlparse.parse_qsl(content))
 
-    auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
     auth.set_access_token(access_token['oauth_token'], access_token['oauth_token_secret'])
-    api = tweepy.API(auth)
-    return api
+    return True
+
+def getTweetsByHashtag(hashtag):
+    query = '%23' + hashtag
+    result = api.search(q=expressquery)
