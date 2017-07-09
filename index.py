@@ -3,6 +3,5 @@ import visual
 
 link, token = twitter.getAuthLink()
 pin = input(link + ' : ')
-client = twitter.getToken(pin, token)
-
-print client.me().screen_name
+if twitter.getToken(pin, token):
+    print twitter.getTweetsByHashtag('nog20p')
