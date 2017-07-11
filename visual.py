@@ -10,7 +10,7 @@ SAMPLE_LABELS_PIE = ['Norway', 'Sweden', 'Great Britain', 'France',  'Japan']
 SAMPLE_DATA_PIE = [1000, 750, 500, 350, 100]
 SAMPLE_LABELS_SCATTER = np.arange(24*7-1)
 SAMPLE_DATA_SCATTER = np.random.randn(24*7-1)
-SAMPLE_GEO_DATA = np.asarray([[12,125],[89,105],[27,110],[24,113]])
+SAMPLE_GEO_DATA = np.asarray([[0,0],[90,0],[-90,0],[0,180],[0,90],[0,-90]])
 
 class Visual(object):
     def __init__(self):
@@ -60,7 +60,7 @@ class Visual(object):
             ax4.plot(x_array, y_array, z_array, color='b')
 
         x_array, y_array, z_array = dataconverter(geoData)
-        ax4.scatter(x_array, y_array, z_array, c='r', marker='^')
+        ax4.scatter(x_array, y_array, z_array, c='r', marker='o', s=3)
 
         ax4.set_title('Geo Data')
         ax4.set_aspect('equal')
