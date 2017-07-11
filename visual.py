@@ -50,7 +50,7 @@ class Visual(object):
     def globalscatter(self, geoData=SAMPLE_GEO_DATA):
         loadList = ['america.csv', 'australia.csv', 'africa.csv', 'antarctica.csv', 'greenland.csv', 'europe_asia.csv']
 
-        ax4 = plt.subplot2grid((2,6), (0,3), colspan=3, rowspan=3, projection='3d')
+        ax4 = plt.subplot2grid((2,6), (0,3), colspan=3, rowspan=2, projection='3d')
 
         for i in range(len(loadList)):
             data = np.genfromtxt(loadList[i], delimiter=',')
