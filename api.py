@@ -17,6 +17,8 @@ authorize_url     = 'https://api.twitter.com/oauth/authorize'
 consumer = oauth.Consumer(CONSUMER_KEY, CONSUMER_SECRET)
 client   = oauth.Client(consumer)
 
+#request_token und access_token Methode von https://github.com/joestump/python-oauth2/wiki/Twitter-Three-legged-OAuth
+
 def getAuthLink():
     resp, content = client.request(request_token_url, 'GET')
     if resp['status'] != '200':
