@@ -3,7 +3,6 @@ import urlparse
 import oauth2 as oauth
 import tweepy
 
-# TODO: Remove these values and ask for user values
 CONSUMER_KEY        = 'eh9cOj5h3W17QpjSY5X21A0CJ'
 CONSUMER_SECRET     = 'neN3X6D8pk54pzo996nGOXeoMLFywi2QTWDe7JEdqzxSB6HDV7'
 
@@ -37,7 +36,3 @@ def getToken(pin, request_token):
 
     auth.set_access_token(access_token['oauth_token'], access_token['oauth_token_secret'])
     return True
-
-def getTweetsByHashtag(hashtag):
-    query = '%23' + hashtag
-    result = api.search(q=expressquery)
