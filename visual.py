@@ -57,7 +57,7 @@ class Visual(object):
             x_array, y_array, z_array = dataconverter(data)
 
             ax4.scatter(x_array, y_array, z_array, c='b', marker='.', s=1)
-            ax4.plot(x_array, y_array, z_array, c='b')
+            ax4.plot(x_array, y_array, z_array, color='b')
 
         x_array, y_array, z_array = dataconverter(geoData)
         ax4.scatter(x_array, y_array, z_array, c='r', marker='^')
