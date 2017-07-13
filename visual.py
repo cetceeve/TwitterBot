@@ -4,12 +4,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
-SAMPLE_LABELS = np.asarray(['The', 'Donald', 'is', 'a', 'f******', 'disgusting', 'Potato'])
-SAMPLE_DATA = np.asarray([1,2,3,4,5,6,7])
+SAMPLE_LABELS = np.asarray(['hashtag_1', 'hashtag_2', 'hashtag_3', 'hashtag_4', 'hashtag_5'])
+SAMPLE_DATA = np.asarray([10,50,125,250,500])
 SAMPLE_LABELS_PIE = np.asarray(['Norway', 'Sweden', 'Great Britain', 'France',  'Japan'])
-SAMPLE_DATA_PIE = np.asarray([1000, 750, 500, 350, 100])
-SAMPLE_LABELS_SCATTER = np.arange(24*7-1)
-SAMPLE_DATA_SCATTER = np.random.randn(24*7-1)
+SAMPLE_DATA_PIE = np.asarray([1000, 750, 500, 350, 200])
+SAMPLE_LABELS_SCATTER = np.asarray(['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'])
+SAMPLE_DATA_SCATTER = np.random.randn(24*7)
 SAMPLE_GEO_DATA = np.asarray([[0,0],[90,0],[-90,0],[0,180],[0,90],[0,-90]])
 
 class Visual(object):
@@ -42,10 +42,18 @@ class Visual(object):
     def scatterplot(self, labels=SAMPLE_LABELS_SCATTER, data=SAMPLE_DATA_SCATTER):
         ax3 = plt.subplot2grid((2,6), (1,0), colspan=3)
 
-        days = np.arange(len(labels))
+        ticks = []
+        pos = np.arange(len(data))
+        for i in range(len(labels)):
+            tmp = int((i+0.5)*len(data)//len(labels))
+            ticks.append(pos[tmp])
+
+        ax3.set_xticks(ticks)
+        ax3.set_xticklabels(labels)
+
         ax3.set_ylabel('Hashtag Count')
         ax3.set_title('Performance')
-        ax3.scatter(days,data)
+        ax3.scatter(pos,data)
 
     def globalscatter(self, geoData=SAMPLE_GEO_DATA):
         loadList = ['america.csv', 'australia.csv', 'africa.csv', 'antarctica.csv', 'greenland.csv', 'europe_asia.csv']
