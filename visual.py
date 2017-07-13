@@ -4,10 +4,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
-SAMPLE_LABELS = ['The', 'Donald', 'is', 'a', 'f******', 'disgusting', 'Potato']
-SAMPLE_DATA = [1,2,3,4,5,6,7]
-SAMPLE_LABELS_PIE = ['Norway', 'Sweden', 'Great Britain', 'France',  'Japan']
-SAMPLE_DATA_PIE = [1000, 750, 500, 350, 100]
+SAMPLE_LABELS = np.asarray(['The', 'Donald', 'is', 'a', 'f******', 'disgusting', 'Potato'])
+SAMPLE_DATA = np.asarray([1,2,3,4,5,6,7])
+SAMPLE_LABELS_PIE = np.asarray(['Norway', 'Sweden', 'Great Britain', 'France',  'Japan'])
+SAMPLE_DATA_PIE = np.asarray([1000, 750, 500, 350, 100])
 SAMPLE_LABELS_SCATTER = np.arange(24*7-1)
 SAMPLE_DATA_SCATTER = np.random.randn(24*7-1)
 SAMPLE_GEO_DATA = np.asarray([[0,0],[90,0],[-90,0],[0,180],[0,90],[0,-90]])
