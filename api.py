@@ -43,4 +43,13 @@ def getTweetsByHashtag(q, geo=True, username=True, timestamp=True):
         raise Exception("Query string can't be None")
     query = '%23' + q
     results = api.search(q=query, rpp=2)
-    return results
+
+    tweet_list = []
+    for t in results:
+        tweet = []
+        tweet.append(t.text)
+        tweet.append(t.location)
+        tweet.append(t.created_at)
+        tweet_list.append(tweet)
+
+    return tweet_list
