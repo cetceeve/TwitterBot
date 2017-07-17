@@ -8,9 +8,13 @@ from collections import OrderedDict
 
 # ------------  Need a LOT of cleaning  ------------- #
 
+#TODO: only add the ~5 most used hashtags (maybe use sets for increased speed)
 #returns updated HashtagDic using content of one tweet
 def getHashtags(searchStr, dic):
+    #regEx search for hastags in Tweets
+    #'hashtags' = list of found hashtags
     hashtags =  re.findall('#\S+', searchStr)
+    #iterate through found hashtags
     for pos in hashtags:
         if pos in dic:
             dic.update({pos : dic[pos]+1})
@@ -18,6 +22,7 @@ def getHashtags(searchStr, dic):
             dic.update({pos :1})
     return dic
 
+#same as above (without regEx)
 def getCountry(country, countDic):
     if country in countDic:
         countDic.update({country : countDic[country]+1})
@@ -25,19 +30,15 @@ def getCountry(country, countDic):
         countDic.update({country : 1})
     return countDic
 
+#same as above
 def timestamp(searchStr,Hourdic):
+    #find current day/hour using regEx
     day = str(re.findall('^\w{2,3}', searchStr))[2:-2]
     hour = int(str(re.findall('\s\d{2}[:]', searchStr))[2:-3])
 
-    #if day in Hourdic and hour in Hourdic[day]:
+    #add +1 tweet to found hour of found day
     Hourdic[day][hour] = Hourdic[day][hour]+1
-    #else:
-    #    if day not in Hourdic:
-    #        Hourdic.update({day : {hour : 0}})
-    #        for x in range(0,24):
-    #            Hourdic[day][x] = 0
-#
-#        Hourdic[day][hour] = 1
+
     return Hourdic
 
 
@@ -48,29 +49,39 @@ def timestamp(searchStr,Hourdic):
 #if twitter.getToken(pin, token):
     #tweets = twitter.getTweetsByHashtag('nog20p')
 
+#####TESTTWEETS  Delete later
 tweets = [{"text": "#abc #def lol", "username": "test", "timestamp": "Thu Jul 06 19:37:36 +0000 2017", "geo": "de"},
 {"text": "#abcd #abc", "username": "testtest", "timestamp": "Thu Jul 06 20:37:36 +0000 2017", "geo": "gb"}]
+################
 
+#create empty dicts to be filled later
+#should dicts be to slow use sets
 HashtagDic = {}
 CountryDic = {}
+#ordered Dic (Weekday order is important)
 TimeDic = OrderedDict()
+#creating weekdays and filling every hour with '0' tweets
+#(to be edited later)
 for x in ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]:
     TimeDic.update({x : {0 : 0}})
     for y in range(0,24):
         TimeDic[x][y] = 0
 
-
+#iterate through every tweetList
 for tweet in tweets:
     for key in tweet:
         if key == "text":
             #creates a dic: 'HashtagName' : 'HashtagCount'
             HashtagDic = getHashtags(tweet["text"],HashtagDic)
         if key == "geo":
+            #creates a dic 'Countries' : 'countryCount'
             CountryDic = getCountry(tweet["geo"], CountryDic)
         if key == "timestamp":
+            #create a dict in a dict:
+            #Weekdays as keys : (Hour of the day : tweetCount)
             TimeDic = timestamp(tweet["timestamp"], TimeDic)
 
-
+#write every Dict in a npArray to give to visual
 Hashtags = np.asarray(HashtagDic.keys())
 HashtagNumbers = np.asarray(HashtagDic.values())
 
@@ -78,6 +89,8 @@ Countries = np.asarray(CountryDic.keys())
 countryCount = np.asarray(CountryDic.values())
 
 Days = np.asarray(TimeDic.keys())
+#create a empty list to write the tweetCounts of every hour of every day in order into ONE List
+#then create a npArray of the list
 Hours = []
 for key in TimeDic:
     Hours.append(TimeDic[key].values())
