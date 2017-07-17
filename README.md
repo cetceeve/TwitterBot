@@ -39,7 +39,7 @@ link, token = twitter.getAuthLink()
 #TODO: Hier muss ein Fenster den Link anzeigen und den Pin abfragen
 twitter.getToken(user_pin, token)
 
-#Anschließend kann die API benutzt werden, es wird ein Objekt übergeben, dass die erwarteten Rückgabewerte beschreibt
+#Anschließend kann die API benutzt werden, es wird ein Objekt übergeben, das die erwarteten Rückgabewerte beschreibt
 tweets = twitter.getTweetsbyHashtag({'hashtag': 'abc', 'geo' = True, timestamp = True, username = False})
 # => tweets -> [['text': '#abc lol', 'username': 'test', 'timestamp': 123456, 'geo': 'de'], [...], ...]
 ```
