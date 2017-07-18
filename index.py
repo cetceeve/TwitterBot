@@ -131,3 +131,4 @@ vis.scatterplot(Days, Hourlist)
 #!wartet bis das Plotfenster geschlossen wird!
 #kein input
 vis.display()
+
