@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
 from mpl_toolkits.mplot3d import Axes3D
 
 SAMPLE_LABELS = np.asarray(['hashtag_1', 'hashtag_2', 'hashtag_3', 'hashtag_4', 'hashtag_5'])
@@ -35,12 +36,15 @@ class Visual(object):
     def piechart(self, labels=SAMPLE_LABELS_PIE,data=SAMPLE_DATA_PIE):
         ax2 = plt.subplot2grid((2,6), (0,1), colspan=2)
 
-        ax2.pie(data, labels=labels, autopct='%1.2f%%', shadow=True, startangle=55)
+        ax2.pie(data, labels=labels, autopct='%1.2f%%', shadow=True, startangle=90)
         ax2.set_title('Origin')
         ax2.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
 
     def scatterplot(self, labels=SAMPLE_LABELS_SCATTER, data=SAMPLE_DATA_SCATTER):
         ax3 = plt.subplot2grid((2,6), (1,0), colspan=3)
+
+        ax3.xaxis.set_major_formatter(ticker.NullFormatter())
+        ax3.xaxis.set_minor_formatter(ticker.FixedFormatter(labels))
 
         ticks = []
         pos = np.arange(len(data))
@@ -48,8 +52,10 @@ class Visual(object):
             tmp = int((i+0.5)*len(data)//len(labels))
             ticks.append(pos[tmp])
 
-        ax3.set_xticks(ticks)
-        ax3.set_xticklabels(labels)
+        ax3.xaxis.set_major_locator(ticker.IndexLocator(24,0))
+        ax3.xaxis.set_minor_locator(ticker.FixedLocator(ticks))
+        #ax3.set_xticks(ticks)
+        #ax3.set_xticklabels(labels)
 
         ax3.set_ylabel('Hashtag Count')
         ax3.set_title('Performance')
