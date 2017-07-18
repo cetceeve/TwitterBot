@@ -54,8 +54,9 @@ class Visual(object):
 
         ax3.xaxis.set_major_locator(ticker.IndexLocator(24,0))
         ax3.xaxis.set_minor_locator(ticker.FixedLocator(ticks))
-        #ax3.set_xticks(ticks)
-        #ax3.set_xticklabels(labels)
+        
+        for tick in ax3.xaxis.get_minor_ticks():
+            tick.tick1line.set_markersize(0)
 
         ax3.set_ylabel('Hashtag Count')
         ax3.set_title('Performance')
