@@ -44,3 +44,4 @@ vis.globalscatter()
 #!wartet bis das Plotfenster geschlossen wird!
 #kein input
 vis.display()
+

@@ -3,7 +3,6 @@ import urlparse
 import oauth2 as oauth
 import tweepy
 
-# TODO: Remove these values and ask for user values
 CONSUMER_KEY        = 'eh9cOj5h3W17QpjSY5X21A0CJ'
 CONSUMER_SECRET     = 'neN3X6D8pk54pzo996nGOXeoMLFywi2QTWDe7JEdqzxSB6HDV7'
 
@@ -18,6 +17,7 @@ authorize_url     = 'https://api.twitter.com/oauth/authorize'
 consumer = oauth.Consumer(CONSUMER_KEY, CONSUMER_SECRET)
 client   = oauth.Client(consumer)
 
+#request_token und access_token Methode von https://github.com/joestump/python-oauth2/wiki/Twitter-Three-legged-OAuth
 def getAuthLink():
     resp, content = client.request(request_token_url, 'GET')
     if resp['status'] != '200':
@@ -38,6 +38,18 @@ def getToken(pin, request_token):
     auth.set_access_token(access_token['oauth_token'], access_token['oauth_token_secret'])
     return True
 
-def getTweetsByHashtag(hashtag):
-    query = '%23' + hashtag
-    result = api.search(q=expressquery)
+def getTweetsByHashtag(q, geo=True, username=True, timestamp=True):
+    if q == None:
+        raise Exception("Query string can't be None")
+    query = '%23' + q
+    results = api.search(q=query, rpp=100)
+
+    tweet_list = []
+    for t in results:
+        tweet = []
+        tweet.append(t.text)
+        tweet.append(t.coordinates)
+        tweet.append(t.created_at)
+        tweet_list.append(tweet)
+
+    return tweet_list
