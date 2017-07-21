@@ -127,7 +127,7 @@ vis.scatterplot(Days, Hourlist)
 # Plot zeigt die Welt und die genaue Position der Tweets in 3D
 # Als Dataset werden etwa 1000 Koordinatenpunkte <<[Breitengrad, Längengrad]>> benötigt
 # Input: 2D Array of floats <<np.asarray([[0,0],[0,180]])>>
-# vis.globalscatter()
+vis.globalscatter()
 
 # Zeigt das Fenster mit allen Plots
 # !wartet bis das Plotfenster geschlossen wird!
