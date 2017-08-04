@@ -2,6 +2,8 @@
 import urlparse
 import oauth2 as oauth
 import tweepy
+import datetime
+import json
 
 CONSUMER_KEY        = 'eh9cOj5h3W17QpjSY5X21A0CJ'
 CONSUMER_SECRET     = 'neN3X6D8pk54pzo996nGOXeoMLFywi2QTWDe7JEdqzxSB6HDV7'
@@ -34,22 +36,41 @@ def getToken(pin, request_token):
 
     resp, content = client.request(access_token_url, 'POST')
     access_token = dict(urlparse.parse_qsl(content))
-
-    auth.set_access_token(access_token['oauth_token'], access_token['oauth_token_secret'])
-    return True
+    try:
+        auth.set_access_token(access_token['oauth_token'], access_token['oauth_token_secret'])
+        return True
+    except Exception, e:
+        return False
 
 def getTweetsByHashtag(q, geo=True, username=True, timestamp=True):
     if q == None:
         raise Exception("Query string can't be None")
     query = '%23' + q
-    results = api.search(q=query, rpp=100)
 
-    tweet_list = []
+    results = list()
+    for status in tweepy.Cursor(api.search,q=query, rpp=100).items(500):
+        results.append(status)
+    #results = api.search(q=query, rpp=100)
+
+    tweet_list = list()
     for t in results:
-        tweet = []
-        tweet.append(t.text)
-        tweet.append(t.coordinates)
-        tweet.append(t.created_at)
+        tweet = {}
+        tweet["text"] = t.text
+        tweet["username"] = t.user.name
+        tweet["geo"] = t.user.lang
+
+        coord = t.coordinates
+        if coord != None:
+            print(repr(coord))
+            coord = str(t.coordinates.get("coordinates"))
+            print(coord)
+            tweet["coordinates"] = coord
+        else:
+            coord = "0"
+            print(coord)
+            tweet["coordinates"] = coord
+
+        tweet["timestamp"] = str(t.created_at.strftime('%a %b %d %H:%M:%S'))
         tweet_list.append(tweet)
 
     return tweet_list
