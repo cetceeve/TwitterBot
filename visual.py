@@ -96,7 +96,8 @@ class Visual(object):
         ax3.set_ylabel('Hashtag Count')
         ax3.set_title('Performance')
         # display the plot
-        ax3.scatter(pos, data)
+        ax3.scatter(pos, data, marker='.', s=1)
+        ax3.plot(pos, data)
 
     # Unfortunatly our "TwitterCrawl" (API query) turned out to NOT return enouph
     # geo-coordinates to be used in this plot. Although the API does support geo-coordinates

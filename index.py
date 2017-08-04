@@ -141,12 +141,14 @@ def calcDisplayVis(tweets,searchedHash):
         if count == 5:
             break
 
-    Countries = np.asarray(CountryDic.keys())
-    countryCount = np.asarray(CountryDic.values())
+    Countries = sorted(CountryDic, key=CountryDic.__getitem__, reverse=True)
+    countryCount = []
+    for key in Countries:
+        countryCount.append(CountryDic[key])
 
     Days = np.asarray(TimeDic.keys())
-                        # create a empty list to write the tweetCounts of every hour of every day in order into ONE List
-                        # then create a npArray of the list
+    # create a empty list to write the tweetCounts of every hour of every day in order into ONE List
+    # then create a npArray of the list
     Hours = []
     for key in TimeDic:
         Hours.append(TimeDic[key].values())
@@ -169,7 +171,7 @@ def calcDisplayVis(tweets,searchedHash):
 # auf Platz1 stehen die Namen der Länder
 # auf Platz2 steht die Zahl der Tweets aus dem zugehörigen Land
 # Input: Platz1: List of Strings, Platz2: List of Integers
-    vis.piechart(Countries, countryCount)
+    vis.piechart(np.asarray(Countries[:5]), np.asarray(countryCount[:5]))
 
 # Plot zeigt die Gesamtzahl von Tweets im zeitlichen Verlauf der letzten 7 Tage
 # Für-einen-Datenpunkt:

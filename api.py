@@ -48,7 +48,7 @@ def getTweetsByHashtag(q, geo=True, username=True, timestamp=True):
     query = '%23' + q
 
     results = list()
-    for status in tweepy.Cursor(api.search,q=query, rpp=100).items(500):
+    for status in tweepy.Cursor(api.search,q=query, rpp=100).items(1000):
         results.append(status)
     #results = api.search(q=query, rpp=100)
 
