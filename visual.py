@@ -100,7 +100,7 @@ class Visual(object):
 
     # Unfortunatly our "TwitterCrawl" (API query) turned out to NOT return enouph
     # geo-coordinates to be used in this plot. Although the API does support geo-coordinates
-    # they are normally empty. This is why the plot has only sample data.
+    # they are normally empty. This is why the plot most of the time shows only some sample data.
     # ----->  The 'globalscatter' function can be seen as a Tech Demo  <-----
 
     # 3D plot that displays a spherical worldmap and up to 100 geo-coordinates

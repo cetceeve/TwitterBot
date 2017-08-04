@@ -61,13 +61,13 @@ def getTweetsByHashtag(q, geo=True, username=True, timestamp=True):
 
         coord = t.coordinates
         if coord != None:
-            print(repr(coord))
+            #print(repr(coord))
             coord = str(t.coordinates.get("coordinates"))
-            print(coord)
+            #print(coord)
             tweet["coordinates"] = coord
         else:
             coord = "0"
-            print(coord)
+            #print(coord)
             tweet["coordinates"] = coord
 
         tweet["timestamp"] = str(t.created_at.strftime('%a %b %d %H:%M:%S'))

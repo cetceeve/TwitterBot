@@ -78,7 +78,6 @@ def tryAgain():
     link.set(Link)
 
 def startSearch():
-    print len(HashtagEntry.get())
     if len(HashtagEntry.get()) != 0:
         tweets = twitter.getTweetsByHashtag(HashtagEntry.get())
         calcDisplayVis(tweets,HashtagEntry.get())
@@ -182,8 +181,11 @@ def calcDisplayVis(tweets,searchedHash):
 # Plot zeigt die Welt und die genaue Position der Tweets in 3D
 # Als Dataset werden etwa 1000 Koordinatenpunkte <<[Breitengrad, Längengrad]>> benötigt
 # Input: 2D Array of floats <<np.asarray([[0,0],[0,180]])>>
-    print(repr(coordList))
-    vis.globalscatter(np.asarray(coordList))
+#    print(repr(np.asarray(coordList)))
+    if not coordList:
+        vis.globalscatter()
+    else:
+        vis.globalscatter(np.asarray(coordList))
 
 # Zeigt das Fenster mit allen Plots
 # !wartet bis das Plotfenster geschlossen wird!
