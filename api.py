@@ -50,27 +50,22 @@ def getTweetsByHashtag(q, geo=True, username=True, timestamp=True):
         raise Exception("Query string can't be None")
     query = '%23' + q
 
-    results = list()
-    for status in tweepy.Cursor(api.search, q=query, rpp=100).items(1000):
-        results.append(status)
-    # results = api.search(q=query, rpp=100)
-
     tweet_list = list()
-    for t in results:
+    for status in tweepy.Cursor(api.search, q=query, rpp=100).items(1000):
         tweet = {}
-        tweet["text"] = t.text
-        tweet["username"] = t.user.name
-        tweet["geo"] = t.user.lang
+        tweet["text"] = status.text
+        tweet["username"] = status.user.name
+        tweet["geo"] = status.user.lang
 
-        coord = t.coordinates
+        coord = status.coordinates
         if coord is not None:
-            coord = str(t.coordinates.get("coordinates"))
+            coord = str(status.coordinates.get("coordinates"))
             tweet["coordinates"] = coord
         else:
             coord = "0"
             tweet["coordinates"] = coord
 
-        tweet["timestamp"] = str(t.created_at.strftime('%a %b %d %H:%M:%S'))
+        tweet["timestamp"] = str(status.created_at.strftime('%a %b %d %H:%M:%S'))
         tweet_list.append(tweet)
 
     return tweet_list

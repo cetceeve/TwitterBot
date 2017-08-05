@@ -73,6 +73,8 @@ class Visual(object):
 
         # sort data to display most recent datapoints to the right (timeline)
         labels, data = sort_weekdays(labels, data)
+        # set label to the far right as 'today'
+        labels[-1] = 'Now'
 
         # use no labels on major ticks
         # use a fixed set of labels on minor ticks
@@ -163,14 +165,14 @@ def sort_weekdays(labels, data):
     today = datetime.datetime.today().weekday()
 
     # change order of weekdays
-    daysSorted = labels[today:]
-    daysSorted = np.append(daysSorted, labels[:today])
+    daysSorted = labels[today + 1:]
+    daysSorted = np.append(daysSorted, labels[:today + 1])
 
     # scale up the current weekday to according hour (not current hour)
     boundryHours = today * 24
     # change order of datapoints
-    hoursSorted = data[boundryHours:]
-    hoursSorted = np.append(hoursSorted, data[:boundryHours])
+    hoursSorted = data[boundryHours + 24:]
+    hoursSorted = np.append(hoursSorted, data[:boundryHours + 24])
 
     # return the sorted data
     return daysSorted, hoursSorted
