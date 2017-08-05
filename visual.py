@@ -112,7 +112,7 @@ class Visual(object):
 
     # 3D plot that displays a spherical worldmap and up to 100 geo-coordinates
     # uses 2D Array of geo-coordinates
-    def globalscatter(self, geoData=SAMPLE_GEO_DATA):
+    def globalscatter(self, geoData=SAMPLE_GEO_DATA, tracker=0):
         # list with all necessary datasets to populate the spherical worldmap with continents
         loadList = ['america.csv', 'australia.csv', 'africa.csv', 'antarctica.csv', 'greenland.csv', 'europe_asia.csv']
 
@@ -134,8 +134,18 @@ class Visual(object):
             # connect all datapoints in one dataset with lines
             ax4.plot(x_array, y_array, z_array, color='b')
 
-        # convert geo-coordinates from twitter crawl to xyz-coordinates
-        x_array, y_array, z_array = dataconverter(geoData)
+        if tracker:
+            # coordinates from twitter crawl have the position of longitude and latitude reversed
+            # swich position of lonitude and latitude
+            geoDataCorrection = np.zeros([len(geoData), 2])
+            geoDataCorrection[:, 0] = geoData[:, 1]
+            geoDataCorrection[:, 1] = geoData[:, 0]
+            # convert corrected geo-coordinates from twitter crawl to xyz-coordinates
+            x_array, y_array, z_array = dataconverter(geoDataCorrection)
+        else:
+            # convert geo-coordinates from sample data to xyz-coordinates
+            x_array, y_array, z_array = dataconverter(geoData)
+
         # display all datapoints from twitter crawl
         ax4.scatter(x_array, y_array, z_array, c='r', marker='o', s=3)
 
@@ -149,7 +159,7 @@ class Visual(object):
 
 # convert geo-coordinates to xyz-coordinates
 def dataconverter(data):
-    # conversion from longitude/latide to xyz is done via simple pytagoras functions
+    # conversion from longitude/latitude to xyz is done via simple pytagoras functions
     # radius not necessary since line 133 ensures that a globe gets displayed and axes are hidden
     an = np.cos(data[:, 0] * (np.pi / 180))
     x_array = np.cos(data[:, 1] * (np.pi / 180)) * an

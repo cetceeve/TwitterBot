@@ -182,7 +182,7 @@ def calcDisplayVis(tweets, searchedHash):
     if not coordList:
         vis.globalscatter()
     else:
-        vis.globalscatter(np.asarray(coordList))
+        vis.globalscatter(np.asarray(coordList), 1)
 
     # Zeigt das Fenster mit allen Plots
     # !wartet bis das Plotfenster geschlossen wird!
