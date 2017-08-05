@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# Github: https://github.com/cetceeve/TwitterBot
+# Fabian Zeiher
 import datetime
 import numpy as np
 import matplotlib.pyplot as plt

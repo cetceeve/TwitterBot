@@ -1,5 +1,8 @@
 #!/usr/local/bin/env python
 # -*- coding: utf-8 -*-
+# Github: https://github.com/cetceeve/TwitterBot
+# Anna Lena Sporrer
+# Fabian Zeiher
 import api as twitter
 import visual
 import numpy as np
@@ -7,11 +10,6 @@ import re
 from collections import OrderedDict
 from Tkinter import *
 import ast
-
-
-# TODO: - Fix connection while retrying to connect correctly ---DONE---
-#       - add custom amount of searched tweets DONE BUT: refine appearance ---DONE---
-#       - only show top 5 countries tweeting ---DONE---
 
 
 # returns updated HashtagDic using content of one tweet
@@ -49,61 +47,64 @@ def timestamp(searchStr, Hourdic):
     return Hourdic
 
 
-#OK Button after pin entry
+# OK Button after pin entry
 def getAuth():
     pin = PinEntry.get()
-    #check for the right pin -> success path
+    # check for the right pin -> success path
     if twitter.getToken(pin, token):
         authent.set("Authentication successful - please enter the hashtag to search for and press 'Search'")
-        #make sure TRYAGAIN button is not visible
+        # make sure TRYAGAIN button is not visible
         TryAgB.grid_forget()
-        #setup success message
+        # setup success message
         Auth.config(fg="forest green")
-        Auth.grid(row = 5)
-        #setup search options (Hashtag entry, number entry, search button)
-        Hashtag.grid(row = 6, sticky = W)
-        HashtagEntry.grid(row = 6, column = 0)
-        HashtagNumber.grid(row = 7, sticky = W)
-        HashtagNumberEntry.grid(row = 7, column = 0)
-        SearchB.grid(row = 8)
-        #Grey out OK button (it's not needed anymore)
+        Auth.grid(row=5)
+        # setup search options (Hashtag entry, number entry, search button)
+        Hashtag.grid(row=6, sticky=W)
+        HashtagEntry.grid(row=6, column=0)
+        HashtagNumber.grid(row=7, sticky=W)
+        HashtagNumberEntry.grid(row=7, column=0)
+        SearchB.grid(row=8)
+        # Grey out OK button (it's not needed anymore)
         OKButton.config(state=DISABLED)
     else:
-        #Fail-Path
-        #setup retry message and button
+        # Fail-Path
+        # setup retry message and button
         authent.set("Authentication failed - try again?")
         Auth.config(fg="red")
-        Auth.grid(row = 5)
-        TryAgB.grid(row = 6)
+        Auth.grid(row=5)
+        TryAgB.grid(row=6)
 
-#RETRY-Button
+
+# RETRY-Button
 def tryAgain():
-    #make sure the new token is saved GLOBALLY, so the Auth-Function uses the new token
+    # make sure the new token is saved GLOBALLY, so the Auth-Function uses the new token
     global token
-    #reset UI, get new link -> set new Link
+    # reset UI, get new link -> set new Link
     TryAgB.grid_forget()
     Auth.grid_forget()
     Link, token = twitter.getAuthLink()
     link.set(Link)
 
-#OK-Button pressed
+
+# OK-Button pressed
 def startSearch():
-    #check whether something is entered
+    # check whether something is entered
     if len(HashtagEntry.get()) != 0:
-        #try to read the number of tweets
+        # try to read the number of tweets
         try:
-            #get tweets
-            tweets = twitter.getTweetsByHashtag(HashtagEntry.get(),int(HashtagNumberEntry.get()))
-            #analyze tweets
+            # get tweets
+            tweets = twitter.getTweetsByHashtag(HashtagEntry.get(), int(HashtagNumberEntry.get()))
+            # analyze tweets
             calcDisplayVis(tweets, HashtagEntry.get())
-        #no number entered|not a number entered -> use standard count = 100
+        # no number entered|not a number entered -> use standard count = 100
         except:
-            tweets = twitter.getTweetsByHashtag(HashtagEntry.get(),100)
+            tweets = twitter.getTweetsByHashtag(HashtagEntry.get(), 100)
             calcDisplayVis(tweets, HashtagEntry.get())
     else:
-        NoHashtag.grid(row = 9)
+        NoHashtag.grid(row=9)
 
-#analyze tweets
+
+# nalyze tweets
 def calcDisplayVis(tweets, searchedHash):
     # create empty dicts to be filled later
     # should dicts be to slow use sets
@@ -142,9 +143,9 @@ def calcDisplayVis(tweets, searchedHash):
     hashtags = list()
     hashtagNumbers = list()
     count = 0
-    #delete first Hashtag
+    # delete first Hashtag
     HashtagDic.pop("#" + searchedHash)
-    #sort used hashtags after most used hashtags and create a list of the top 5
+    # sort used hashtags after most used hashtags and create a list of the top 5
     for x in sorted(HashtagDic, key=HashtagDic.get, reverse=True):
         hashtags.append(x)
         hashtagNumbers.append(HashtagDic[x])
@@ -212,10 +213,10 @@ def calcDisplayVis(tweets, searchedHash):
 
 # ##########-----------------APP START-------------------##########
 # UI #
-#create window
+# create window
 root = Tk()
 root.width = 150
-#create textvariables
+# create textvariables
 instr1 = StringVar()
 instr2 = StringVar()
 noHash = StringVar()
@@ -224,18 +225,18 @@ link = StringVar()
 hashNum = StringVar()
 Hash = StringVar()
 
-#edit textvariables
+# edit textvariables
 instr2.set("Please enter the pin below and press 'OK'")
 instr1.set("Use this link to get an authentication pin:")
 noHash.set("No hashtag entered")
 hashNum.set("Tweets Number:")
 Hash.set("Hashtag (without \"#\") :")
 
-#get a new link/token
+# get a new link/token
 Link, token = twitter.getAuthLink()
 link.set(Link)
 
-#create labels
+# create labels
 label1 = Label(root, textvariable=instr1)
 label2 = Label(root, textvariable=instr2)
 NoHashtag = Label(root, textvariable=noHash)
@@ -243,23 +244,23 @@ Auth = Label(root, textvariable=authent)
 Hashtag = Label(root, textvariable=Hash)
 HashtagNumber = Label(root, textvariable=hashNum)
 
-#create Entries
+# create Entries
 LinkEntry = Entry(root, textvariable=link, width=90, state="readonly")
 PinEntry = Entry(root, width=20)
 HashtagEntry = Entry(root, width=30)
-HashtagNumberEntry = Entry(root, width = 30)
+HashtagNumberEntry = Entry(root, width=30)
 
-#create Buttons
-OKButton = Button(root, text="OK", command= lambda :getAuth())
+# create Buttons
+OKButton = Button(root, text="OK", command=lambda: getAuth())
 SearchB = Button(root, text="Search!", command=startSearch)
-TryAgB = Button(root, text="Try Again!", command= lambda :tryAgain())
+TryAgB = Button(root, text="Try Again!", command=lambda: tryAgain())
 
-#setup starting window
-label1.grid(row = 0)
-LinkEntry.grid(row = 1)
-label2.grid(row = 2)
-PinEntry.grid(row = 3)
-OKButton.grid(row = 4)
+# setup starting window
+label1.grid(row=0)
+LinkEntry.grid(row=1)
+label2.grid(row=2)
+PinEntry.grid(row=3)
+OKButton.grid(row=4)
 
-#start mainloop
+# start mainloop
 root.mainloop()
