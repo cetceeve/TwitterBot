@@ -1,17 +1,31 @@
-# Twitteranalyse
+# TwitterBot
 
 ### Analysieren und Visualisieren von Daten in Tweets
 
-- Programm zur Visualisierung von Daten in Tweets
-- Nutzer kann über eine Maske ein Stichwort festlegen
-- Programm geht rückwirkend alle Tweets in einem Zeitraum durch und verarbeitet diejenigen, welche das Stichwort beinhalten
-- Anschließend werden dem Nutzer verschiedene Daten (wie z. B. Menge und Ort) zu den verarbeiteten Tweets dargestellt
+Mit diesem Programm können Sie Daten anhand eines Hashtags von Twitter abrufen. Es wird eine vom Nutzer festgelegte Anzahl an Tweets verarbeitet.
+Die Darstellung der Informationen in drei Diagrammen, bietet eine schnelle Auskunft über den Kontext des gesuchten Hashtags ('Cluster'), über die fünf Länder in denen der Hashtag besonders häufig verwendet wurde ('Origin') und darüber wie viel der Hashtag in den letzten sieben Tagen verwendet wurde ('Performance').
 
-### Aufgabenverteilung:
+### Bedienung:
 
-- _API:_ Felix
-- _Verarbeitung:_ Anna-Lena
-- _Visualisierung:_ Fabian
+- Starten des Programmes:
+Mit dem Befehl `python index.py` in einem Terminal innerhalb des Programmordners, starten sie das Programm.
+- Ein GUI führt Sie durch die Authentifizierung beim Twitter Server
+> Hinweis: Sie benötigen einen Twitter Account.
+
+- Sie können nach jedem x-beliebigen hashtag suchen, allerdings liefern unsere Plots bei sehr gefragten hashtags, wie z.B. #trump keine besonders interessanten Ergebnisse, da oft alle Tweets innerhalb der letzten paar Stunden und in der gleichen Location abgeschickt wurden.
+> Probieren Sie ruhig auch einmal ungewöhnlichere Hashtags, diese liefern oft schönere Ergebnisse.
+
+- Bei der Anzahl der Tweets empfehlen wir etwa 1000, wenn nötig können bis zu 5000 Tweets geladen werden.
+
+### Installation:
+
+Sie benötigen eine Version von _Python 2.7_ und folgende Packages:
+
+- numpy
+- Tkinter
+- matplotlib
+- oauth2
+- tweepy
 
 ### Struktur:
 
@@ -19,27 +33,18 @@
 - API: `api.py`
 - Visualisierung: `visual.py`
 
-### 1. Funktion:
+### Troubleshooting:
 
-- 1 hashtag suchen
-- Tweets mit Metadaten der letzten 7 Tage sammeln
-- Visualisierung:
-  - Menge pro Stunde (Scatter; Menge über Stunde)
-  - Top 5 Länder (Kreisdiagramm)
-  - Hashtagverbindungen (top 5 der hashtags die zusammen mit dem gesuchten genannt werden)
+- **Das Programm lädt aber zeigt "Keine Rückmeldung":**
+Das ist normal. Leider benötigt es noch viel Zeit alle Daten zu sammeln und zu verarbeiten.
+> Ladezeiten bis zu drei Minuten sind nicht ungewöhnlich.
 
-### API Usage
+- **Das Programm funktioniert wirklich nicht:**
+Falls das Programm abstürzt wird normalerweise eine Fehlermeldung im Terminal erscheinen.
+Diese ist meist äußerst hilfreich. Sie können das Programm dann durch drücken von `strg + c` im Terminal beenden.
+> Eine typische Fehlermeldung enthält den Error Code 429.
+Das bedeutet, dass Sie zu viele Anfragen an den Twitter Server gestellt haben und nun einige Minuten warten müssen.
 
-```python
-import api as twitter
-
-#Gib einen vorläufigen Token und den Link zur Authentifizierung zurück
-link, token = twitter.getAuthLink()
-
-#TODO: Hier muss ein Fenster den Link anzeigen und den Pin abfragen
-twitter.getToken(user_pin, token)
-
-#Anschließend kann die API benutzt werden, es wird ein Objekt übergeben, das die erwarteten Rückgabewerte beschreibt
-tweets = twitter.getTweetsbyHashtag({'hashtag': 'abc', 'geo' = True, timestamp = True, username = False})
-# => tweets -> [['text': '#abc lol', 'username': 'test', 'timestamp': 123456, 'geo': 'de'], [...], ...]
-```
+- **Auf der "Erdkugel" wird nichts gezeigt:**
+Das ist normal. Leider sind Geographischen Daten bei Twitter nur sehr sporadisch vorhanden. Der 3D Plot ist also im Moment eher eine Tech Demo, als ein "echter" Plot.
+> Meist zeigt der 3D Plot nur Beispieldaten um zu demonstrieren wie er funktionieren könnte, wenn ein geeigneter Datensatz verfügbar wäre.
