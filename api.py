@@ -45,18 +45,22 @@ def getToken(pin, request_token):
         return False
 
 
-def getTweetsByHashtag(q, geo=True, username=True, timestamp=True):
+def getTweetsByHashtag(q,tweetNumber, geo=True, username=True, timestamp=True):
     if q is None:
         raise Exception("Query string can't be None")
     query = '%23' + q
 
     tweet_list = list()
-    for status in tweepy.Cursor(api.search, q=query, rpp=100).items(1000):
+    #cursor reads through tweets until set tweetNumber is reached, saves one tweet into a status Object
+    #from which the desired information is extracted and saved into a dictionary
+    #every tweet Dicionary is then added to the complete tweet_list
+    for status in tweepy.Cursor(api.search, q=query, rpp=100).items(tweetNumber):
         tweet = {}
         tweet["text"] = status.text
         tweet["username"] = status.user.name
         tweet["geo"] = status.user.lang
 
+        #not always are coordinates available -> set coord to '0'
         coord = status.coordinates
         if coord is not None:
             coord = str(status.coordinates.get("coordinates"))
@@ -64,7 +68,7 @@ def getTweetsByHashtag(q, geo=True, username=True, timestamp=True):
         else:
             coord = "0"
             tweet["coordinates"] = coord
-
+        #convert timestamp into usable string
         tweet["timestamp"] = str(status.created_at.strftime('%a %b %d %H:%M:%S'))
         tweet_list.append(tweet)
 

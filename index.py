@@ -8,11 +8,9 @@ from collections import OrderedDict
 from Tkinter import *
 import ast
 
-# ------------  Need a LOT of cleaning  ------------- #
 
-
-# TODO: - Fix connection while retrying to connect correctly
-#       - add custom amount of searched tweets
+# TODO: - Fix connection while retrying to connect correctly ---DONE---
+#       - add custom amount of searched tweets DONE BUT: refine appearance ---DONE---
 #       - only show top 5 countries tweeting ---DONE---
 
 
@@ -51,42 +49,61 @@ def timestamp(searchStr, Hourdic):
     return Hourdic
 
 
-# try again old token used?
-
+#OK Button after pin entry
 def getAuth():
-    global token
     pin = PinEntry.get()
+    #check for the right pin -> success path
     if twitter.getToken(pin, token):
         authent.set("Authentication successful - please enter the hashtag to search for and press 'Search'")
-        TryAgB.pack_forget()
-        Auth.config(fg="green")
-        Auth.pack()
-        HashtagEntry.pack()
-        SearchB.pack()
+        #make sure TRYAGAIN button is not visible
+        TryAgB.grid_forget()
+        #setup success message
+        Auth.config(fg="forest green")
+        Auth.grid(row = 5)
+        #setup search options (Hashtag entry, number entry, search button)
+        Hashtag.grid(row = 6, sticky = W)
+        HashtagEntry.grid(row = 6, column = 0)
+        HashtagNumber.grid(row = 7, sticky = W)
+        HashtagNumberEntry.grid(row = 7, column = 0)
+        SearchB.grid(row = 8)
+        #Grey out OK button (it's not needed anymore)
         OKButton.config(state=DISABLED)
     else:
+        #Fail-Path
+        #setup retry message and button
         authent.set("Authentication failed - try again?")
         Auth.config(fg="red")
-        Auth.pack()
-        TryAgB.pack()
+        Auth.grid(row = 5)
+        TryAgB.grid(row = 6)
 
-
+#RETRY-Button
 def tryAgain():
+    #make sure the new token is saved GLOBALLY, so the Auth-Function uses the new token
     global token
-    TryAgB.pack_forget()
-    Auth.pack_forget()
+    #reset UI, get new link -> set new Link
+    TryAgB.grid_forget()
+    Auth.grid_forget()
     Link, token = twitter.getAuthLink()
     link.set(Link)
 
-
+#OK-Button pressed
 def startSearch():
+    #check whether something is entered
     if len(HashtagEntry.get()) != 0:
-        tweets = twitter.getTweetsByHashtag(HashtagEntry.get())
-        calcDisplayVis(tweets, HashtagEntry.get())
+        #try to read the number of tweets
+        try:
+            #get tweets
+            tweets = twitter.getTweetsByHashtag(HashtagEntry.get(),int(HashtagNumberEntry.get()))
+            #analyze tweets
+            calcDisplayVis(tweets, HashtagEntry.get())
+        #no number entered|not a number entered -> use standard count = 100
+        except:
+            tweets = twitter.getTweetsByHashtag(HashtagEntry.get(),100)
+            calcDisplayVis(tweets, HashtagEntry.get())
     else:
-        NoHashtag.pack()
+        NoHashtag.grid(row = 9)
 
-
+#analyze tweets
 def calcDisplayVis(tweets, searchedHash):
     # create empty dicts to be filled later
     # should dicts be to slow use sets
@@ -112,6 +129,7 @@ def calcDisplayVis(tweets, searchedHash):
             if key == "geo":
                 # creates a dic 'Countries' : 'countryCount'
                 CountryDic = getCountry(tweet["geo"], CountryDic)
+            # only IF coordinates are available they are added to the list
             if key == "coordinates":
                 if tweet["coordinates"] != "0":
                     coordList.append(ast.literal_eval(tweet["coordinates"]))
@@ -124,7 +142,9 @@ def calcDisplayVis(tweets, searchedHash):
     hashtags = list()
     hashtagNumbers = list()
     count = 0
+    #delete first Hashtag
     HashtagDic.pop("#" + searchedHash)
+    #sort used hashtags after most used hashtags and create a list of the top 5
     for x in sorted(HashtagDic, key=HashtagDic.get, reverse=True):
         hashtags.append(x)
         hashtagNumbers.append(HashtagDic[x])
@@ -143,7 +163,7 @@ def calcDisplayVis(tweets, searchedHash):
 
     Days = np.asarray(TimeDic.keys())
     # create a empty list to write the tweetCounts of every hour of every day in order into ONE List
-    # then create a npArray of the list
+    # then create a npArray of said list
     Hours = []
     for key in TimeDic:
         Hours.append(TimeDic[key].values())
@@ -190,41 +210,56 @@ def calcDisplayVis(tweets, searchedHash):
     vis.display()
 
 
-# ####----------APP START--------------#####
+# ##########-----------------APP START-------------------##########
 # UI #
+#create window
 root = Tk()
 root.width = 150
+#create textvariables
 instr1 = StringVar()
 instr2 = StringVar()
 noHash = StringVar()
 authent = StringVar()
 link = StringVar()
+hashNum = StringVar()
+Hash = StringVar()
+
+#edit textvariables
 instr2.set("Please enter the pin below and press 'OK'")
 instr1.set("Use this link to get an authentication pin:")
 noHash.set("No hashtag entered")
+hashNum.set("Tweets Number:")
+Hash.set("Hashtag (without \"#\") :")
 
+#get a new link/token
 Link, token = twitter.getAuthLink()
 link.set(Link)
 
-# labels
+#create labels
 label1 = Label(root, textvariable=instr1)
 label2 = Label(root, textvariable=instr2)
 NoHashtag = Label(root, textvariable=noHash)
 Auth = Label(root, textvariable=authent)
+Hashtag = Label(root, textvariable=Hash)
+HashtagNumber = Label(root, textvariable=hashNum)
 
-# Entries
+#create Entries
 LinkEntry = Entry(root, textvariable=link, width=90, state="readonly")
 PinEntry = Entry(root, width=20)
 HashtagEntry = Entry(root, width=30)
-# Buttons
-OKButton = Button(root, text="OK", command=getAuth)
+HashtagNumberEntry = Entry(root, width = 30)
+
+#create Buttons
+OKButton = Button(root, text="OK", command= lambda :getAuth())
 SearchB = Button(root, text="Search!", command=startSearch)
-TryAgB = Button(root, text="Try Again!", command=tryAgain)
+TryAgB = Button(root, text="Try Again!", command= lambda :tryAgain())
 
-label1.pack()
-LinkEntry.pack()
-label2.pack()
-PinEntry.pack()
-OKButton.pack()
+#setup starting window
+label1.grid(row = 0)
+LinkEntry.grid(row = 1)
+label2.grid(row = 2)
+PinEntry.grid(row = 3)
+OKButton.grid(row = 4)
 
+#start mainloop
 root.mainloop()
