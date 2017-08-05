@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import datetime
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
@@ -69,6 +70,9 @@ class Visual(object):
         # position plot in the lower left place on the pot window
         # span 3 columns wide
         ax3 = plt.subplot2grid((2, 6), (1, 0), colspan=3)
+
+        # sort data to display most recent datapoints to the right (timeline)
+        labels, data = sort_weekdays(labels, data)
 
         # use no labels on major ticks
         # use a fixed set of labels on minor ticks
@@ -151,3 +155,22 @@ def dataconverter(data):
     z_array = np.sin(data[:, 0] * (np.pi / 180))
     # returns tuple of xyz-coordinates
     return x_array, y_array, z_array
+
+
+# sort data to display most recent datapoints to the right (timeline)
+def sort_weekdays(labels, data):
+    # find the users current weekday
+    today = datetime.datetime.today().weekday()
+
+    # change order of weekdays
+    daysSorted = labels[today:]
+    daysSorted = np.append(daysSorted, labels[:today])
+
+    # scale up the current weekday to according hour (not current hour)
+    boundryHours = today * 24
+    # change order of datapoints
+    hoursSorted = data[boundryHours:]
+    hoursSorted = np.append(hoursSorted, data[:boundryHours])
+
+    # return the sorted data
+    return daysSorted, hoursSorted

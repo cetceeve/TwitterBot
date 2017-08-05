@@ -13,7 +13,7 @@ import ast
 
 # TODO: - Fix connection while retrying to connect correctly
 #       - add custom amount of searched tweets
-#       - only show top 5 countries tweeting
+#       - only show top 5 countries tweeting ---DONE---
 
 
 # returns updated HashtagDic using content of one tweet
