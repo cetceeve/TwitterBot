@@ -13,7 +13,7 @@ import ast
 
 # TODO: - Fix connection while retrying to connect correctly
 #       - add custom amount of searched tweets
-#       - only show top 5 countries tweeting
+#       - only show top 5 countries tweeting ---DONE---
 
 
 # returns updated HashtagDic using content of one tweet
@@ -51,7 +51,7 @@ def timestamp(searchStr, Hourdic):
     return Hourdic
 
 
-##try again old token used?
+# try again old token used?
 
 def getAuth():
     global token
@@ -59,16 +59,17 @@ def getAuth():
     if twitter.getToken(pin, token):
         authent.set("Authentication successful - please enter the hashtag to search for and press 'Search'")
         TryAgB.pack_forget()
-        Auth.config(fg = "green")
+        Auth.config(fg="green")
         Auth.pack()
         HashtagEntry.pack()
         SearchB.pack()
-        OKButton.config(state = DISABLED)
+        OKButton.config(state=DISABLED)
     else:
         authent.set("Authentication failed - try again?")
-        Auth.config(fg = "red")
+        Auth.config(fg="red")
         Auth.pack()
         TryAgB.pack()
+
 
 def tryAgain():
     global token
@@ -77,25 +78,16 @@ def tryAgain():
     Link, token = twitter.getAuthLink()
     link.set(Link)
 
+
 def startSearch():
-    print len(HashtagEntry.get())
     if len(HashtagEntry.get()) != 0:
         tweets = twitter.getTweetsByHashtag(HashtagEntry.get())
-        calcDisplayVis(tweets,HashtagEntry.get())
+        calcDisplayVis(tweets, HashtagEntry.get())
     else:
         NoHashtag.pack()
 
-# API
-#link, token = twitter.getAuthLink()
-#pin = input(link + ' : ')
-#if twitter.getToken(pin, token):
-#    tweets = twitter.getTweetsByHashtag('nog20p')
 
-# ####TESTTWEETS  Delete later
-#tweets = [{"text": "#abc #def lol", "username": "test", "timestamp": "Thu Jul 06 19:37:36 +0000 2017", "geo": "de"},
-          #{"text": "#abcd #abc", "username": "testtest", "timestamp": "Thu Jul 06 20:37:36 +0000 2017", "geo": "gb"}]
-################
-def calcDisplayVis(tweets,searchedHash):
+def calcDisplayVis(tweets, searchedHash):
     # create empty dicts to be filled later
     # should dicts be to slow use sets
     HashtagDic = {}
@@ -111,43 +103,47 @@ def calcDisplayVis(tweets,searchedHash):
         for y in range(0, 24):
             TimeDic[x][y] = 0
 
-
-            # iterate through every tweetList
+    # iterate through every tweetList
     for tweet in tweets:
         for key in tweet:
             if key == "text":
                 # creates a dic: 'HashtagName' : 'HashtagCount'
                 HashtagDic = getHashtags(tweet["text"], HashtagDic)
             if key == "geo":
-                    # creates a dic 'Countries' : 'countryCount'
+                # creates a dic 'Countries' : 'countryCount'
                 CountryDic = getCountry(tweet["geo"], CountryDic)
             if key == "coordinates":
                 if tweet["coordinates"] != "0":
                     coordList.append(ast.literal_eval(tweet["coordinates"]))
             if key == "timestamp":
-                        # create a dict in a dict:
-                        # Weekdays as keys : (Hour of the day : tweetCount)
+                # create a dict in a dict:
+                # Weekdays as keys : (Hour of the day : tweetCount)
                 TimeDic = timestamp(tweet["timestamp"], TimeDic)
-
-                        # write every Dict in a npArray to give to visual
+                # write every Dict in a npArray to give to visual
 
     hashtags = list()
     hashtagNumbers = list()
     count = 0
-    HashtagDic.pop("#"+searchedHash)
+    HashtagDic.pop("#" + searchedHash)
     for x in sorted(HashtagDic, key=HashtagDic.get, reverse=True):
         hashtags.append(x)
         hashtagNumbers.append(HashtagDic[x])
-        count += 1;
+        count += 1
         if count == 5:
             break
 
-    Countries = np.asarray(CountryDic.keys())
-    countryCount = np.asarray(CountryDic.values())
+    # sort countries after the amount of tweets
+    # create a list of country tags from dictionary keys
+    Countries = sorted(CountryDic, key=CountryDic.__getitem__, reverse=True)
+    countryCount = []
+    # create list with the amount of tweets from each country
+    # this list adapts the sorting from the Countries list
+    for key in Countries:
+        countryCount.append(CountryDic[key])
 
     Days = np.asarray(TimeDic.keys())
-                        # create a empty list to write the tweetCounts of every hour of every day in order into ONE List
-                        # then create a npArray of the list
+    # create a empty list to write the tweetCounts of every hour of every day in order into ONE List
+    # then create a npArray of the list
     Hours = []
     for key in TimeDic:
         Hours.append(TimeDic[key].values())
@@ -158,39 +154,43 @@ def calcDisplayVis(tweets,searchedHash):
     # kein input
     vis = visual.Visual()
 
-# Plot zeigt andere Hashtags die oft zusammen mit dem gesuchten Hashtag geschrieben wurden
-# Für-einen-Datenpunkt:
-# auf Platz1 stehen die Hashtags
-# auf Platz2 steht die Zahl, wie oft ein Hashtag zusammen mit dem gesuchten Hashtag gefunden wurde
-# Input: Platz1: List of Strings, Platz2: List of Integers
-    vis.barplot(np.asarray(hashtags),np.asarray(hashtagNumbers))
+    # Plot zeigt andere Hashtags die oft zusammen mit dem gesuchten Hashtag geschrieben wurden
+    # Für-einen-Datenpunkt:
+    # auf Platz1 stehen die Hashtags
+    # auf Platz2 steht die Zahl, wie oft ein Hashtag zusammen mit dem gesuchten Hashtag gefunden wurde
+    # Input: Platz1: List of Strings, Platz2: List of Integers
+    vis.barplot(np.asarray(hashtags), np.asarray(hashtagNumbers))
 
-# Plot zeigt aus welchem Land die Tweets mit dem gesuchten Hashtag kommen
-# Für-einen-Datenpunkt:
-# auf Platz1 stehen die Namen der Länder
-# auf Platz2 steht die Zahl der Tweets aus dem zugehörigen Land
-# Input: Platz1: List of Strings, Platz2: List of Integers
-    vis.piechart(Countries, countryCount)
+    # Plot zeigt aus welchem Land die Tweets mit dem gesuchten Hashtag kommen
+    # Für-einen-Datenpunkt:
+    # auf Platz1 stehen die Namen der Länder
+    # auf Platz2 steht die Zahl der Tweets aus dem zugehörigen Land
+    # Input: Platz1: List of Strings, Platz2: List of Integers
+    vis.piechart(np.asarray(Countries[:5]), np.asarray(countryCount[:5]))
 
-# Plot zeigt die Gesamtzahl von Tweets im zeitlichen Verlauf der letzten 7 Tage
-# Für-einen-Datenpunkt:
-# auf Platz1 stehen die Wochentage mit zwei Buchstaben also 'Mo', 'Di', usw.
-# auf Platz2 steht die Anzahl der Tweets innerhalb einer Stunde!
-# Input: Platz1: List of Strings, Platz2: List of Integers
+    # Plot zeigt die Gesamtzahl von Tweets im zeitlichen Verlauf der letzten 7 Tage
+    # Für-einen-Datenpunkt:
+    # auf Platz1 stehen die Wochentage mit zwei Buchstaben also 'Mo', 'Di', usw.
+    # auf Platz2 steht die Anzahl der Tweets innerhalb einer Stunde!
+    # Input: Platz1: List of Strings, Platz2: List of Integers
     vis.scatterplot(Days, Hourlist)
 
-# Plot zeigt die Welt und die genaue Position der Tweets in 3D
-# Als Dataset werden etwa 1000 Koordinatenpunkte <<[Breitengrad, Längengrad]>> benötigt
-# Input: 2D Array of floats <<np.asarray([[0,0],[0,180]])>>
-    print(repr(coordList))
-    vis.globalscatter(np.asarray(coordList))
+    # Plot zeigt die Welt und die genaue Position der Tweets in 3D
+    # Als Dataset werden etwa 1000 Koordinatenpunkte <<[Breitengrad, Längengrad]>> benötigt
+    # Input: 2D Array of floats <<np.asarray([[0,0],[0,180]])>>
+    #    print(repr(np.asarray(coordList)))
+    if not coordList:
+        vis.globalscatter()
+    else:
+        vis.globalscatter(np.asarray(coordList))
 
-# Zeigt das Fenster mit allen Plots
-# !wartet bis das Plotfenster geschlossen wird!
-# kein input
+    # Zeigt das Fenster mit allen Plots
+    # !wartet bis das Plotfenster geschlossen wird!
+    # kein input
     vis.display()
 
-#####----------APP START--------------#####
+
+# ####----------APP START--------------#####
 # UI #
 root = Tk()
 root.width = 150
@@ -206,20 +206,20 @@ noHash.set("No hashtag entered")
 Link, token = twitter.getAuthLink()
 link.set(Link)
 
-#labels
+# labels
 label1 = Label(root, textvariable=instr1)
 label2 = Label(root, textvariable=instr2)
 NoHashtag = Label(root, textvariable=noHash)
-Auth = Label(root, textvariable = authent)
+Auth = Label(root, textvariable=authent)
 
-#Entries
-LinkEntry = Entry(root,textvariable=link,width = 90, state="readonly")
-PinEntry = Entry(root, width = 20)
-HashtagEntry = Entry(root, width = 30)
-#Buttons
-OKButton = Button(root, text ="OK", command = getAuth)
-SearchB = Button(root, text="Search!", command = startSearch)
-TryAgB = Button(root, text="Try Again!", command = tryAgain)
+# Entries
+LinkEntry = Entry(root, textvariable=link, width=90, state="readonly")
+PinEntry = Entry(root, width=20)
+HashtagEntry = Entry(root, width=30)
+# Buttons
+OKButton = Button(root, text="OK", command=getAuth)
+SearchB = Button(root, text="Search!", command=startSearch)
+TryAgB = Button(root, text="Try Again!", command=tryAgain)
 
 label1.pack()
 LinkEntry.pack()

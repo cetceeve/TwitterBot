@@ -19,7 +19,8 @@ authorize_url     = 'https://api.twitter.com/oauth/authorize'
 consumer = oauth.Consumer(CONSUMER_KEY, CONSUMER_SECRET)
 client   = oauth.Client(consumer)
 
-#request_token und access_token Methode von https://github.com/joestump/python-oauth2/wiki/Twitter-Three-legged-OAuth
+
+# request_token und access_token Methode von https://github.com/joestump/python-oauth2/wiki/Twitter-Three-legged-OAuth
 def getAuthLink():
     resp, content = client.request(request_token_url, 'GET')
     if resp['status'] != '200':
@@ -28,6 +29,7 @@ def getAuthLink():
     request_token = dict(urlparse.parse_qsl(content))
 
     return ('%s?oauth_token=%s' % (authorize_url, request_token['oauth_token']), request_token)
+
 
 def getToken(pin, request_token):
     token = oauth.Token(request_token['oauth_token'], request_token['oauth_token_secret'])
@@ -42,35 +44,28 @@ def getToken(pin, request_token):
     except Exception, e:
         return False
 
+
 def getTweetsByHashtag(q, geo=True, username=True, timestamp=True):
-    if q == None:
+    if q is None:
         raise Exception("Query string can't be None")
     query = '%23' + q
 
-    results = list()
-    for status in tweepy.Cursor(api.search,q=query, rpp=100).items(500):
-        results.append(status)
-    #results = api.search(q=query, rpp=100)
-
     tweet_list = list()
-    for t in results:
+    for status in tweepy.Cursor(api.search, q=query, rpp=100).items(1000):
         tweet = {}
-        tweet["text"] = t.text
-        tweet["username"] = t.user.name
-        tweet["geo"] = t.user.lang
+        tweet["text"] = status.text
+        tweet["username"] = status.user.name
+        tweet["geo"] = status.user.lang
 
-        coord = t.coordinates
-        if coord != None:
-            print(repr(coord))
-            coord = str(t.coordinates.get("coordinates"))
-            print(coord)
+        coord = status.coordinates
+        if coord is not None:
+            coord = str(status.coordinates.get("coordinates"))
             tweet["coordinates"] = coord
         else:
             coord = "0"
-            print(coord)
             tweet["coordinates"] = coord
 
-        tweet["timestamp"] = str(t.created_at.strftime('%a %b %d %H:%M:%S'))
+        tweet["timestamp"] = str(status.created_at.strftime('%a %b %d %H:%M:%S'))
         tweet_list.append(tweet)
 
     return tweet_list
