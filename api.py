@@ -3,6 +3,7 @@
 # Github: https://github.com/cetceeve/TwitterBot
 # Anna Lena Sporrer
 # Felix Wieland
+from __future__ import print_function
 import urlparse
 import oauth2 as oauth
 import tweepy
@@ -55,6 +56,7 @@ def getTweetsByHashtag(q, tweetNumber, geo=True, username=True, timestamp=True):
     query = '%23' + q
 
     tweet_list = list()
+    runner = 0
     # cursor reads through tweets until set tweetNumber is reached, saves one tweet into a status Object
     # from which the desired information is extracted and saved into a dictionary
     # every tweet Dicionary is then added to the complete tweet_list
@@ -75,5 +77,8 @@ def getTweetsByHashtag(q, tweetNumber, geo=True, username=True, timestamp=True):
         # convert timestamp into usable string
         tweet["timestamp"] = str(status.created_at.strftime('%a %b %d %H:%M:%S'))
         tweet_list.append(tweet)
+        runner += 1
+        print ('\rLoading: {}/{}'.format(runner, tweetNumber), end='')
 
+    print ("\Download finished")
     return tweet_list
