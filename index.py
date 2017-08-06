@@ -8,7 +8,7 @@ import visual
 import numpy as np
 import re
 from collections import OrderedDict
-from Tkinter import *
+import Tkinter as tk
 import ast
 
 
@@ -59,13 +59,13 @@ def getAuth():
         Auth.config(fg="forest green")
         Auth.grid(row=5)
         # setup search options (Hashtag entry, number entry, search button)
-        Hashtag.grid(row=6, sticky=W)
+        Hashtag.grid(row=6, sticky=tk.W)
         HashtagEntry.grid(row=6, column=0)
-        HashtagNumber.grid(row=7, sticky=W)
+        HashtagNumber.grid(row=7, sticky=tk.W)
         HashtagNumberEntry.grid(row=7, column=0)
         SearchB.grid(row=8)
         # Grey out OK button (it's not needed anymore)
-        OKButton.config(state=DISABLED)
+        OKButton.config(state=tk.DISABLED)
     else:
         # Fail-Path
         # setup retry message and button
@@ -214,16 +214,16 @@ def calcDisplayVis(tweets, searchedHash):
 # ##########-----------------APP START-------------------##########
 # UI #
 # create window
-root = Tk()
+root = tk.Tk()
 root.width = 150
 # create textvariables
-instr1 = StringVar()
-instr2 = StringVar()
-noHash = StringVar()
-authent = StringVar()
-link = StringVar()
-hashNum = StringVar()
-Hash = StringVar()
+instr1 = tk.StringVar()
+instr2 = tk.StringVar()
+noHash = tk.StringVar()
+authent = tk.StringVar()
+link = tk.StringVar()
+hashNum = tk.StringVar()
+Hash = tk.StringVar()
 
 # edit textvariables
 instr2.set("Please enter the pin below and press 'OK'")
@@ -237,23 +237,23 @@ Link, token = twitter.getAuthLink()
 link.set(Link)
 
 # create labels
-label1 = Label(root, textvariable=instr1)
-label2 = Label(root, textvariable=instr2)
-NoHashtag = Label(root, textvariable=noHash)
-Auth = Label(root, textvariable=authent)
-Hashtag = Label(root, textvariable=Hash)
-HashtagNumber = Label(root, textvariable=hashNum)
+label1 = tk.Label(root, textvariable=instr1)
+label2 = tk.Label(root, textvariable=instr2)
+NoHashtag = tk.Label(root, textvariable=noHash)
+Auth = tk.Label(root, textvariable=authent)
+Hashtag = tk.Label(root, textvariable=Hash)
+HashtagNumber = tk.Label(root, textvariable=hashNum)
 
 # create Entries
-LinkEntry = Entry(root, textvariable=link, width=90, state="readonly")
-PinEntry = Entry(root, width=20)
-HashtagEntry = Entry(root, width=30)
-HashtagNumberEntry = Entry(root, width=30)
+LinkEntry = tk.Entry(root, textvariable=link, width=90, state="readonly")
+PinEntry = tk.Entry(root, width=20)
+HashtagEntry = tk.Entry(root, width=30)
+HashtagNumberEntry = tk.Entry(root, width=30)
 
 # create Buttons
-OKButton = Button(root, text="OK", command=lambda: getAuth())
-SearchB = Button(root, text="Search!", command=startSearch)
-TryAgB = Button(root, text="Try Again!", command=lambda: tryAgain())
+OKButton = tk.Button(root, text="OK", command=lambda: getAuth())
+SearchB = tk.Button(root, text="Search!", command=startSearch)
+TryAgB = tk.Button(root, text="Try Again!", command=lambda: tryAgain())
 
 # setup starting window
 label1.grid(row=0)
