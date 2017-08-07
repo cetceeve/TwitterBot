@@ -80,5 +80,5 @@ def getTweetsByHashtag(q, tweetNumber, geo=True, username=True, timestamp=True):
         runner += 1
         print ('\rLoading: {}/{}'.format(runner, tweetNumber), end='')
 
-    print ("\Download finished")
+    print ("\nDownload finished!")
     return tweet_list

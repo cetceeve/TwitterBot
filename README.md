@@ -16,7 +16,7 @@ Mit dem Befehl `python index.py` in einem Terminal innerhalb des Programmordners
 - Sie können nach jedem x-beliebigen Hashtag suchen, allerdings liefern unsere Plots bei sehr gefragten Hashtags, wie z.B. #trump keine besonders interessanten Ergebnisse, da oft alle Tweets innerhalb der letzten paar Stunden und in der gleichen Location abgeschickt wurden.
 > Probieren Sie ruhig auch einmal ungewöhnlichere Hashtags, diese liefern oft schönere Ergebnisse.
 
-- Bei der Anzahl der Tweets empfehlen wir etwa 1000, wenn nötig können bis zu 5000 Tweets geladen werden.
+- Bei der Anzahl der Tweets empfehlen wir etwa 1000, wenn nötig können bis zu 2500 Tweets geladen werden.
 
 ### Installation:
 
@@ -38,7 +38,7 @@ Sie benötigen eine Version von _Python 2.7_ und folgende Packages:
 
 - **Das Programm lädt aber zeigt "Keine Rückmeldung":**
 Das ist normal. Leider benötigt es noch viel Zeit, um alle Daten zu sammeln und zu verarbeiten.
-> Ladezeiten bis zu drei Minuten sind nicht ungewöhnlich.
+> Ladezeiten bis zu drei Minuten sind nicht ungewöhnlich. Im Terminal können sie den Download Fortschritt verfolgen.
 
 - **Das Programm funktioniert wirklich nicht:**
 Falls das Programm abstürzt wird normalerweise eine Fehlermeldung im Terminal erscheinen.
