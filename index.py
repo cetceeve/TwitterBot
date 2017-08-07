@@ -85,7 +85,7 @@ def tryAgain():
     try:
         Link, token = twitter.getAuthLink()
     except Exception:
-        authent.set("Please check your internet connection and try again.")
+        authent.set("Server Connection failed! Please try again.")
         Auth.config(fg="red")
         Auth.grid(row=5)
         TryAgB.grid(row=6)
@@ -95,6 +95,8 @@ def tryAgain():
 
 # OK-Button pressed
 def startSearch():
+    # in case tweets were not correct last time
+    MaxTweets.grid_forget()
     # check whether a hashtag is entered
     if len(HashtagEntry.get()) != 0 and len(HashtagNumberEntry.get()) != 0:
         # Input is there
@@ -104,20 +106,24 @@ def startSearch():
             hashtagNumber = int(HashtagNumberEntry.get())
         # no integer entered
         except ValueError:
-            NoNumber.grid(row=9)
+            NotANumber.grid(row=9)
         else:
-            # Number s correct
-            NoNumber.grid_forget()
-            # try loading the tweets
-            try:
-                # get tweets
-                tweets = twitter.getTweetsByHashtag(HashtagEntry.get(), hashtagNumber)
-            # an Error occured while loading the tweets
-            except Exception:
-                print "Exception while loading tweets. Please try again."
+            # Number is integer
+            NotANumber.grid_forget()
+            # check if the number is too high
+            if hashtagNumber > 2500:
+                MaxTweets.grid(row=9)
             else:
-                # analyze tweets if nothing went wrong
-                calcDisplayVis(tweets, HashtagEntry.get())
+                # try loading the tweets
+                try:
+                    # get tweets
+                    tweets = twitter.getTweetsByHashtag(HashtagEntry.get(), hashtagNumber)
+                    # an Error occured while loading the tweets
+                except Exception:
+                    print "Exception while loading tweets. Please try again."
+                else:
+                    # analyze tweets if nothing went wrong
+                    calcDisplayVis(tweets, HashtagEntry.get())
 
     else:
         NoInput.grid(row=9)
@@ -239,7 +245,8 @@ root.width = 150
 instr1 = tk.StringVar()
 instr2 = tk.StringVar()
 noIn = tk.StringVar()
-noNum = tk.StringVar()
+notANum = tk.StringVar()
+maxTweets = tk.StringVar()
 authent = tk.StringVar()
 link = tk.StringVar()
 hashNum = tk.StringVar()
@@ -248,16 +255,18 @@ Hash = tk.StringVar()
 # edit textvariables
 instr2.set("Please enter the pin below and press 'OK'")
 instr1.set("Use this link to get an authentication pin:")
-noIn.set("Enter one Hashtag and one Number.")
-noNum.set("Enter an Integer for the Amount of Tweets")
+noIn.set("Please enter one hashtag and one number!")
+notANum.set("Please enter an integer for the amount of tweets!")
+maxTweets.set("Warning! Don't load more than 2500 tweets.")
 hashNum.set("Tweets Number:")
 Hash.set("Hashtag (without \"#\") :")
 
 # create labels
 label1 = tk.Label(root, textvariable=instr1)
 label2 = tk.Label(root, textvariable=instr2)
-NoInput = tk.Label(root, textvariable=noIn)
-NoNumber = tk.Label(root, textvariable=noNum)
+NoInput = tk.Label(root, textvariable=noIn, fg="red")
+NotANumber = tk.Label(root, textvariable=notANum, fg="red")
+MaxTweets = tk.Label(root, textvariable=maxTweets, fg="red")
 Auth = tk.Label(root, textvariable=authent)
 Hashtag = tk.Label(root, textvariable=Hash)
 HashtagNumber = tk.Label(root, textvariable=hashNum)
@@ -284,7 +293,7 @@ OKButton.grid(row=4)
 try:
     Link, token = twitter.getAuthLink()
 except Exception:
-    authent.set("Please check your internet connection and try again.")
+    authent.set("Server Connection failed! Please try again.")
     Auth.config(fg="red")
     Auth.grid(row=5)
     TryAgB.grid(row=6)
