@@ -85,7 +85,10 @@ def tryAgain():
     try:
         Link, token = twitter.getAuthLink()
     except Exception:
-        print "Check your internet connection!"
+        authent.set("Please check your internet connection and try again.")
+        Auth.config(fg="red")
+        Auth.grid(row=5)
+        TryAgB.grid(row=6)
     else:
         link.set(Link)
 
@@ -250,14 +253,6 @@ noNum.set("Enter an Integer for the Amount of Tweets")
 hashNum.set("Tweets Number:")
 Hash.set("Hashtag (without \"#\") :")
 
-# get a new link/token
-try:
-    Link, token = twitter.getAuthLink()
-except Exception:
-    print "Check your internet connection!"
-else:
-    link.set(Link)
-
 # create labels
 label1 = tk.Label(root, textvariable=instr1)
 label2 = tk.Label(root, textvariable=instr2)
@@ -284,6 +279,17 @@ LinkEntry.grid(row=1)
 label2.grid(row=2)
 PinEntry.grid(row=3)
 OKButton.grid(row=4)
+
+# get a new link/token
+try:
+    Link, token = twitter.getAuthLink()
+except Exception:
+    authent.set("Please check your internet connection and try again.")
+    Auth.config(fg="red")
+    Auth.grid(row=5)
+    TryAgB.grid(row=6)
+else:
+    link.set(Link)
 
 # start mainloop
 root.mainloop()
