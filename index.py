@@ -82,26 +82,42 @@ def tryAgain():
     # reset UI, get new link -> set new Link
     TryAgB.grid_forget()
     Auth.grid_forget()
-    Link, token = twitter.getAuthLink()
-    link.set(Link)
+    try:
+        Link, token = twitter.getAuthLink()
+    except Exception:
+        print "Check your internet connection!"
+    else:
+        link.set(Link)
 
 
 # OK-Button pressed
 def startSearch():
-    # check whether something is entered
-    if len(HashtagEntry.get()) != 0:
-        # try to read the number of tweets
+    # check whether a hashtag is entered
+    if len(HashtagEntry.get()) != 0 and len(HashtagNumberEntry.get()) != 0:
+        # Input is there
+        NoInput.grid_forget()
+        # Check if Number is an Integer
         try:
-            # get tweets
-            tweets = twitter.getTweetsByHashtag(HashtagEntry.get(), int(HashtagNumberEntry.get()))
-            # analyze tweets
-            calcDisplayVis(tweets, HashtagEntry.get())
-        # no number entered|not a number entered -> use standard count = 100
-        except:
-            tweets = twitter.getTweetsByHashtag(HashtagEntry.get(), 100)
-            calcDisplayVis(tweets, HashtagEntry.get())
+            hashtagNumber = int(HashtagNumberEntry.get())
+        # no integer entered
+        except ValueError:
+            NoNumber.grid(row=9)
+        else:
+            # Number s correct
+            NoNumber.grid_forget()
+            # try loading the tweets
+            try:
+                # get tweets
+                tweets = twitter.getTweetsByHashtag(HashtagEntry.get(), hashtagNumber)
+            # an Error occured while loading the tweets
+            except Exception:
+                print "Exception while loading tweets. Please try again."
+            else:
+                # analyze tweets if nothing went wrong
+                calcDisplayVis(tweets, HashtagEntry.get())
+
     else:
-        NoHashtag.grid(row=9)
+        NoInput.grid(row=9)
 
 
 # nalyze tweets
@@ -219,7 +235,8 @@ root.width = 150
 # create textvariables
 instr1 = tk.StringVar()
 instr2 = tk.StringVar()
-noHash = tk.StringVar()
+noIn = tk.StringVar()
+noNum = tk.StringVar()
 authent = tk.StringVar()
 link = tk.StringVar()
 hashNum = tk.StringVar()
@@ -228,18 +245,24 @@ Hash = tk.StringVar()
 # edit textvariables
 instr2.set("Please enter the pin below and press 'OK'")
 instr1.set("Use this link to get an authentication pin:")
-noHash.set("No hashtag entered")
+noIn.set("Enter one Hashtag and one Number.")
+noNum.set("Enter an Integer for the Amount of Tweets")
 hashNum.set("Tweets Number:")
 Hash.set("Hashtag (without \"#\") :")
 
 # get a new link/token
-Link, token = twitter.getAuthLink()
-link.set(Link)
+try:
+    Link, token = twitter.getAuthLink()
+except Exception:
+    print "Check your internet connection!"
+else:
+    link.set(Link)
 
 # create labels
 label1 = tk.Label(root, textvariable=instr1)
 label2 = tk.Label(root, textvariable=instr2)
-NoHashtag = tk.Label(root, textvariable=noHash)
+NoInput = tk.Label(root, textvariable=noIn)
+NoNumber = tk.Label(root, textvariable=noNum)
 Auth = tk.Label(root, textvariable=authent)
 Hashtag = tk.Label(root, textvariable=Hash)
 HashtagNumber = tk.Label(root, textvariable=hashNum)
