@@ -147,6 +147,7 @@ class Visual(object):
         else:
             # convert geo-coordinates from sample data to xyz-coordinates
             x_array, y_array, z_array = dataconverter(geoData)
+            ax4.text2D(0.415, 0.15, "Sample Data", transform=ax4.transAxes)
 
         # display all datapoints from twitter crawl
         ax4.scatter(x_array, y_array, z_array, c='r', marker='o', s=3)

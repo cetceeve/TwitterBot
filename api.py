@@ -84,7 +84,7 @@ def getTweetsByHashtag(q, tweetNumber, geo=True, username=True, timestamp=True):
         raise Exception
     # If everything worked, give back the tweetlist
     else:
-        print ("\nDownload finished!")
+        print ("\nDownload successful!")
     finally:
         if not tweet_list:
             raise Exception
