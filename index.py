@@ -129,7 +129,7 @@ def startSearch():
         NoInput.grid(row=9)
 
 
-# nalyze tweets
+# Analyze tweets
 def calcDisplayVis(tweets, searchedHash):
     # create empty dicts to be filled later
     # should dicts be to slow use sets
@@ -205,30 +205,30 @@ def calcDisplayVis(tweets, searchedHash):
     # auf Platz1 stehen die Hashtags
     # auf Platz2 steht die Zahl, wie oft ein Hashtag zusammen mit dem gesuchten Hashtag gefunden wurde
     # Input: Platz1: List of Strings, Platz2: List of Integers
-    vis.barplot(np.asarray(hashtags), np.asarray(hashtagNumbers))
+    vis.create_barplot(np.asarray(hashtags), np.asarray(hashtagNumbers))
 
     # Plot zeigt aus welchem Land die Tweets mit dem gesuchten Hashtag kommen
     # Für-einen-Datenpunkt:
     # auf Platz1 stehen die Namen der Länder
     # auf Platz2 steht die Zahl der Tweets aus dem zugehörigen Land
     # Input: Platz1: List of Strings, Platz2: List of Integers
-    vis.piechart(np.asarray(Countries[:5]), np.asarray(countryCount[:5]))
+    vis.create_piechart(np.asarray(Countries[:5]), np.asarray(countryCount[:5]))
 
     # Plot zeigt die Gesamtzahl von Tweets im zeitlichen Verlauf der letzten 7 Tage
     # Für-einen-Datenpunkt:
     # auf Platz1 stehen die Wochentage mit zwei Buchstaben also 'Mo', 'Di', usw.
     # auf Platz2 steht die Anzahl der Tweets innerhalb einer Stunde!
     # Input: Platz1: List of Strings, Platz2: List of Integers
-    vis.scatterplot(Days, Hourlist)
+    vis.create_scatterplot(Days, Hourlist)
 
     # Plot zeigt die Welt und die genaue Position der Tweets in 3D
     # Als Dataset werden etwa 1000 Koordinatenpunkte <<[Breitengrad, Längengrad]>> benötigt
     # Input: 2D Array of floats <<np.asarray([[0,0],[0,180]])>>
     #    print(repr(np.asarray(coordList)))
     if not coordList:
-        vis.globalscatter()
+        vis.create_globalscatter()
     else:
-        vis.globalscatter(np.asarray(coordList), 1)
+        vis.create_globalscatter(np.asarray(coordList), 1)
 
     # Zeigt das Fenster mit allen Plots
     # !wartet bis das Plotfenster geschlossen wird!

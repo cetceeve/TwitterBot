@@ -10,19 +10,19 @@ import tweepy
 import datetime
 import json
 
-CONSUMER_KEY        = 'eh9cOj5h3W17QpjSY5X21A0CJ'
-CONSUMER_SECRET     = 'neN3X6D8pk54pzo996nGOXeoMLFywi2QTWDe7JEdqzxSB6HDV7'
+CONSUMER_KEY = 'eh9cOj5h3W17QpjSY5X21A0CJ'
+CONSUMER_SECRET = 'neN3X6D8pk54pzo996nGOXeoMLFywi2QTWDe7JEdqzxSB6HDV7'
 
 auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 api = tweepy.API(auth)
 
 # URLs
 request_token_url = 'https://api.twitter.com/oauth/request_token'
-access_token_url  = 'https://api.twitter.com/oauth/access_token'
-authorize_url     = 'https://api.twitter.com/oauth/authorize'
+access_token_url = 'https://api.twitter.com/oauth/access_token'
+authorize_url = 'https://api.twitter.com/oauth/authorize'
 
 consumer = oauth.Consumer(CONSUMER_KEY, CONSUMER_SECRET)
-client   = oauth.Client(consumer)
+client = oauth.Client(consumer)
 
 
 # request_token und access_token Methode von https://github.com/joestump/python-oauth2/wiki/Twitter-Three-legged-OAuth

@@ -22,7 +22,20 @@ SAMPLE_GEO_DATA = np.asarray([[0, 0], [90, 0], [-90, 0], [0, 180], [0, 90], [0, 
 class Visual(object):
     # initialize the window that can be populated by plots
     def __init__(self):
-        fig = plt.figure(figsize=(13, 5))
+        self.fig = plt.figure(figsize=(13, 5))
+        # use a grid with 2 rows and 6 columns
+        # position barplot in the upper left place of the plotwindow
+        self.barplot = plt.subplot2grid((2, 6), (0, 0), rowspan=1)
+        # position piechart in the upper row on the second column of the plotwindow
+        # span 2 columns wide
+        self.piechart = plt.subplot2grid((2, 6), (0, 1), colspan=2)
+        # position scatterplot in the lower left place on the pot window
+        # span 3 columns wide
+        self.scatterplot = plt.subplot2grid((2, 6), (1, 0), colspan=3)
+        # position plot on the right side of the pot window
+        # span 2 rows and colums wide
+        # initialize a 3 dimensional plot
+        self.globalscatter = plt.subplot2grid((2, 6), (0, 3), colspan=3, rowspan=2, projection='3d')
 
     # display the plot window using a tight layout
     # waits till that window is closed
@@ -32,47 +45,33 @@ class Visual(object):
 
     # plot with horizontal bars
     # uses a list of strings (labels) and a list of integers (data)
-    def barplot(self, labels=SAMPLE_LABELS, data=SAMPLE_DATA):
-        # use a grid with 2 rows and 6 columns
-        # position plot in the upper left place of the plotwindow
-        ax1 = plt.subplot2grid((2, 6), (0, 0), rowspan=1)
-
+    def create_barplot(self, labels=SAMPLE_LABELS, data=SAMPLE_DATA):
         # craft y_axes and turn barplot horizontal
         pos = np.arange(len(data))
-        ax1.set_yticks(pos)
-        ax1.set_yticklabels(labels)
-        ax1.invert_yaxis()
+        self.barplot.set_yticks(pos)
+        self.barplot.set_yticklabels(labels)
+        self.barplot.invert_yaxis()
 
         # set labels for axes and plot title
-        ax1.set_xlabel('Hashtag Count')
-        ax1.set_title('Cluster')
+        self.barplot.set_xlabel('Hashtag Count')
+        self.barplot.set_title('Cluster')
         # display the plot
-        ax1.barh(pos, data)
+        self.barplot.barh(pos, data)
 
     # pieplot to visualize percentages
     # uses list of strings (labels) and list of integers (data)
-    def piechart(self, labels=SAMPLE_LABELS_PIE, data=SAMPLE_DATA_PIE):
-        # use a grid with 2 rows and 6 columns
-        # position plot in the upper row on the second column of the plotwindow
-        # span 2 columns wide
-        ax2 = plt.subplot2grid((2, 6), (0, 1), colspan=2)
-
+    def create_piechart(self, labels=SAMPLE_LABELS_PIE, data=SAMPLE_DATA_PIE):
         # set plot title
-        ax2.set_title('Origin')
+        self.piechart.set_title('Origin')
         # ensure that pie is drawn as a circle
-        ax2.axis('equal')
+        self.piechart.axis('equal')
         # display the plot
-        ax2.pie(data, labels=labels, autopct='%1.2f%%', shadow=True, startangle=90)
+        self.piechart.pie(data, labels=labels, autopct='%1.2f%%', shadow=True, startangle=90)
 
     # scatterplot meant to display 168 datapoints over 7 days time
     # uses list of strings (labels) with 7 expected items
     # and list of integers (data) with 168 expected items
-    def scatterplot(self, labels=SAMPLE_LABELS_SCATTER, data=SAMPLE_DATA_SCATTER):
-        # use a grid with 2 rows and 6 columns
-        # position plot in the lower left place on the pot window
-        # span 3 columns wide
-        ax3 = plt.subplot2grid((2, 6), (1, 0), colspan=3)
-
+    def create_scatterplot(self, labels=SAMPLE_LABELS_SCATTER, data=SAMPLE_DATA_SCATTER):
         # sort data to display most recent datapoints to the right (timeline)
         labels, data = sort_weekdays(labels, data)
         # set label to the far right as 'today'
@@ -80,8 +79,8 @@ class Visual(object):
 
         # use no labels on major ticks
         # use a fixed set of labels on minor ticks
-        ax3.xaxis.set_major_formatter(ticker.NullFormatter())
-        ax3.xaxis.set_minor_formatter(ticker.FixedFormatter(labels))
+        self.scatterplot.xaxis.set_major_formatter(ticker.NullFormatter())
+        self.scatterplot.xaxis.set_minor_formatter(ticker.FixedFormatter(labels))
 
         # compute exact position for minor ticks
         ticks = []
@@ -93,19 +92,19 @@ class Visual(object):
 
         # set major ticks to work with 7 labels (8 ticks will be set)
         # set minor ticks on their positions
-        ax3.xaxis.set_major_locator(ticker.IndexLocator(24, 0))
-        ax3.xaxis.set_minor_locator(ticker.FixedLocator(ticks))
+        self.scatterplot.xaxis.set_major_locator(ticker.IndexLocator(24, 0))
+        self.scatterplot.xaxis.set_minor_locator(ticker.FixedLocator(ticks))
 
         # hide minor tick markers
-        for tick in ax3.xaxis.get_minor_ticks():
+        for tick in self.scatterplot.xaxis.get_minor_ticks():
             tick.tick1line.set_markersize(0)
 
         # set labels for axes and plot title
-        ax3.set_ylabel('Hashtag Count')
-        ax3.set_title('Performance')
+        self.scatterplot.set_ylabel('Hashtag Count')
+        self.scatterplot.set_title('Performance')
         # display the plot
-        ax3.scatter(pos, data, marker='.', s=1)
-        ax3.plot(pos, data)
+        self.scatterplot.scatter(pos, data, marker='.', s=1)
+        self.scatterplot.plot(pos, data)
 
     # Unfortunatly our "TwitterCrawl" (API query) turned out to NOT return enouph
     # geo-coordinates to be used in this plot. Although the API does support geo-coordinates
@@ -114,15 +113,10 @@ class Visual(object):
 
     # 3D plot that displays a spherical worldmap and up to 100 geo-coordinates
     # uses 2D Array of geo-coordinates
-    def globalscatter(self, geoData=SAMPLE_GEO_DATA, tracker=0):
+    def create_globalscatter(self, geoData=SAMPLE_GEO_DATA, tracker=0):
         # list with all necessary datasets to populate the spherical worldmap with continents
-        loadList = ['america.csv', 'australia.csv', 'africa.csv', 'antarctica.csv', 'greenland.csv', 'europe_asia.csv']
-
-        # use a grid with 2 rows and 6 columns
-        # position plot on the right side of the pot window
-        # span 2 rows and colums wide
-        # initialize a 3 dimensional plot
-        ax4 = plt.subplot2grid((2, 6), (0, 3), colspan=3, rowspan=2, projection='3d')
+        loadList = ['america.csv', 'australia.csv', 'africa.csv',
+                    'antarctica.csv', 'greenland.csv', 'europe_asia.csv']
 
         # populate worldmap with continents
         # load every continent from loadList
@@ -132,9 +126,9 @@ class Visual(object):
             # convert geo-coordinates to xyz-coordinates
             x_array, y_array, z_array = dataconverter(data)
             # display all datapoints of one dataset
-            ax4.scatter(x_array, y_array, z_array, c='b', marker='.', s=1)
+            self.globalscatter.scatter(x_array, y_array, z_array, c='b', marker='.', s=1)
             # connect all datapoints in one dataset with lines
-            ax4.plot(x_array, y_array, z_array, color='b')
+            self.globalscatter.plot(x_array, y_array, z_array, color='b')
 
         if tracker:
             # coordinates from twitter crawl have the position of longitude and latitude reversed
@@ -147,17 +141,18 @@ class Visual(object):
         else:
             # convert geo-coordinates from sample data to xyz-coordinates
             x_array, y_array, z_array = dataconverter(geoData)
-            ax4.text2D(0.415, 0.15, "Sample Data", transform=ax4.transAxes)
+            self.globalscatter.text2D(0.415, 0.18, "Sample Data",
+                                      transform=self.globalscatter.transAxes)
 
         # display all datapoints from twitter crawl
-        ax4.scatter(x_array, y_array, z_array, c='r', marker='o', s=3)
+        self.globalscatter.scatter(x_array, y_array, z_array, c='r', marker='o', s=3)
 
         # set plot title
-        ax4.set_title('Geo Data')
+        self.globalscatter.set_title('Geo Data')
         # ensure that a globe is displayed
-        ax4.set_aspect('equal')
+        self.globalscatter.set_aspect('equal')
         # hide all axes
-        ax4.axis('off')
+        self.globalscatter.axis('off')
 
 
 # convert geo-coordinates to xyz-coordinates
