@@ -63,7 +63,8 @@ def getAuth():
         HashtagEntry.grid(row=6, column=0)
         HashtagNumber.grid(row=7, sticky=tk.W)
         HashtagNumberEntry.grid(row=7, column=0)
-        SearchB.grid(row=8)
+        GeoDataCheck.grid(row=8)
+        SearchB.grid(row=9)
         # Grey out OK button (it's not needed anymore)
         OKButton.config(state=tk.DISABLED)
     else:
@@ -106,13 +107,13 @@ def startSearch():
             hashtagNumber = int(HashtagNumberEntry.get())
         # no integer entered
         except ValueError:
-            NotANumber.grid(row=9)
+            NotANumber.grid(row=10)
         else:
             # Number is integer
             NotANumber.grid_forget()
             # check if the number is too high
             if hashtagNumber > 2500:
-                MaxTweets.grid(row=9)
+                MaxTweets.grid(row=10)
             else:
                 # try loading the tweets
                 try:
@@ -126,7 +127,7 @@ def startSearch():
                     calcDisplayVis(tweets, HashtagEntry.get())
 
     else:
-        NoInput.grid(row=9)
+        NoInput.grid(row=10)
 
 
 # Analyze tweets
@@ -198,7 +199,7 @@ def calcDisplayVis(tweets, searchedHash):
     # Visualisierung
     # Instatiert ein Visual-Object, Initiert das Fenster
     # kein input
-    vis = visual.Visual()
+    vis = visual.Visual(geoDataCheck.get())
 
     # Plot zeigt andere Hashtags die oft zusammen mit dem gesuchten Hashtag geschrieben wurden
     # Für-einen-Datenpunkt:
@@ -225,10 +226,11 @@ def calcDisplayVis(tweets, searchedHash):
     # Als Dataset werden etwa 1000 Koordinatenpunkte <<[Breitengrad, Längengrad]>> benötigt
     # Input: 2D Array of floats <<np.asarray([[0,0],[0,180]])>>
     #    print(repr(np.asarray(coordList)))
-    if not coordList:
-        vis.create_globalscatter()
-    else:
-        vis.create_globalscatter(np.asarray(coordList), 1)
+    if geoDataCheck.get():
+        if not coordList:
+            vis.create_globalscatter()
+        else:
+            vis.create_globalscatter(np.asarray(coordList), 1)
 
     # Zeigt das Fenster mit allen Plots
     # !wartet bis das Plotfenster geschlossen wird!
@@ -251,6 +253,9 @@ authent = tk.StringVar()
 link = tk.StringVar()
 hashNum = tk.StringVar()
 Hash = tk.StringVar()
+
+# create other variables
+geoDataCheck = tk.BooleanVar()
 
 # edit textvariables
 instr2.set("Please enter the pin below and press 'OK'")
@@ -281,6 +286,9 @@ HashtagNumberEntry = tk.Entry(root, width=30)
 OKButton = tk.Button(root, text="OK", command=lambda: getAuth())
 SearchB = tk.Button(root, text="Search!", command=startSearch)
 TryAgB = tk.Button(root, text="Try Again!", command=lambda: tryAgain())
+
+# create Checkbutton
+GeoDataCheck = tk.Checkbutton(root, text="Display GeoData in 3D Plot", variable=geoDataCheck, onvalue=True, offvalue=False)
 
 # setup starting window
 label1.grid(row=0)

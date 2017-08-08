@@ -8,34 +8,47 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 from mpl_toolkits.mplot3d import Axes3D
 
-# sample data to pupulate the plots if there are no parameters given on function call
-SAMPLE_LABELS = np.asarray(['hashtag_1', 'hashtag_2', 'hashtag_3', 'hashtag_4', 'hashtag_5'])
-SAMPLE_DATA = np.asarray([10, 50, 125, 250, 500])
-SAMPLE_LABELS_PIE = np.asarray(['Norway', 'Sweden', 'Great Britain', 'France', 'Japan'])
-SAMPLE_DATA_PIE = np.asarray([1000, 750, 500, 350, 200])
-SAMPLE_LABELS_SCATTER = np.asarray(['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'])
-SAMPLE_DATA_SCATTER = np.random.randn(24 * 7)
-SAMPLE_GEO_DATA = np.asarray([[0, 0], [90, 0], [-90, 0], [0, 180], [0, 90], [0, -90]])
-
 
 # Visual Class to contain all fuctions relevant to display a full plot window
 class Visual(object):
+
+    # sample data to pupulate the plots if there are no parameters given on function call
+    SAMPLE_LABELS = np.asarray(['hashtag_1', 'hashtag_2', 'hashtag_3', 'hashtag_4', 'hashtag_5'])
+    SAMPLE_DATA = np.asarray([10, 50, 125, 250, 500])
+    SAMPLE_LABELS_PIE = np.asarray(['Norway', 'Sweden', 'Great Britain', 'France', 'Japan'])
+    SAMPLE_DATA_PIE = np.asarray([1000, 750, 500, 350, 200])
+    SAMPLE_LABELS_SCATTER = np.asarray(['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'])
+    SAMPLE_DATA_SCATTER = np.random.randn(24 * 7)
+    SAMPLE_GEO_DATA = np.asarray([[0, 0], [90, 0], [-90, 0], [0, 180], [0, 90], [0, -90]])
+
     # initialize the window that can be populated by plots
-    def __init__(self):
-        self.fig = plt.figure(figsize=(13, 5))
-        # use a grid with 2 rows and 6 columns
-        # position barplot in the upper left place of the plotwindow
-        self.barplot = plt.subplot2grid((2, 6), (0, 0), rowspan=1)
-        # position piechart in the upper row on the second column of the plotwindow
-        # span 2 columns wide
-        self.piechart = plt.subplot2grid((2, 6), (0, 1), colspan=2)
-        # position scatterplot in the lower left place on the pot window
-        # span 3 columns wide
-        self.scatterplot = plt.subplot2grid((2, 6), (1, 0), colspan=3)
-        # position plot on the right side of the pot window
-        # span 2 rows and colums wide
-        # initialize a 3 dimensional plot
-        self.globalscatter = plt.subplot2grid((2, 6), (0, 3), colspan=3, rowspan=2, projection='3d')
+    def __init__(self, geoDataCheck):
+        if geoDataCheck:
+            self.fig = plt.figure(figsize=(12, 5))
+            # use a grid with 2 rows and 6 columns
+            # position barplot in the upper left place of the plotwindow
+            self.barplot = plt.subplot2grid((2, 5), (0, 0), rowspan=1)
+            # position piechart in the upper row on the second column of the plotwindow
+            # span 2 columns wide
+            self.piechart = plt.subplot2grid((2, 5), (0, 1), colspan=2)
+            # position scatterplot in the lower left place on the pot window
+            # span 3 columns wide
+            self.scatterplot = plt.subplot2grid((2, 5), (1, 0), colspan=3)
+            # position plot on the right side of the pot window
+            # span 2 rows and colums wide
+            # initialize a 3 dimensional plot
+            self.globalscatter = plt.subplot2grid((2, 5), (0, 3), colspan=2, rowspan=2, projection='3d')
+        else:
+            self.fig = plt.figure(figsize=(8, 5))
+            # use a grid with 2 rows and 6 columns
+            # position barplot in the upper left place of the plotwindow
+            self.barplot = plt.subplot2grid((2, 3), (0, 0), rowspan=1)
+            # position piechart in the upper row on the second column of the plotwindow
+            # span 2 columns wide
+            self.piechart = plt.subplot2grid((2, 3), (0, 1), colspan=2)
+            # position scatterplot in the lower left place on the pot window
+            # span 3 columns wide
+            self.scatterplot = plt.subplot2grid((2, 3), (1, 0), colspan=3)
 
     # display the plot window using a tight layout
     # waits till that window is closed
