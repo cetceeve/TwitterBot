@@ -10,6 +10,8 @@ import tweepy
 import datetime
 import json
 
+API_ERROR_CODE = '000'
+
 CONSUMER_KEY = 'eh9cOj5h3W17QpjSY5X21A0CJ'
 CONSUMER_SECRET = 'neN3X6D8pk54pzo996nGOXeoMLFywi2QTWDe7JEdqzxSB6HDV7'
 
@@ -51,6 +53,7 @@ def getToken(pin, request_token):
 
 
 def getTweetsByHashtag(q, tweetNumber, geo=True, username=True, timestamp=True):
+    global API_ERROR_CODE
     query = '%23' + q
 
     tweet_list = list()
@@ -80,11 +83,12 @@ def getTweetsByHashtag(q, tweetNumber, geo=True, username=True, timestamp=True):
             print ('\rLoading: {}/{}'.format(runner, tweetNumber), end='')
     # catch errors
     except Exception as error:
-        print ("\nError while loading tweets: ", error)
-        raise Exception
+        API_ERROR_CODE = str(error)[-3:]
+        print ('\nException while loading tweets:', error)
     # If everything worked, give back the tweetlist
     else:
-        print ("\nDownload successful!")
+        API_ERROR_CODE = '000'
+        print ("\nDownload successful!\n")
     finally:
         if not tweet_list:
             raise Exception

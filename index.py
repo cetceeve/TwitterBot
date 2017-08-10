@@ -96,38 +96,53 @@ def tryAgain():
 
 # OK-Button pressed
 def startSearch():
-    # in case tweets were not correct last time
-    MaxTweets.grid_forget()
+    Error.grid_forget()
     # check whether a hashtag is entered
     if len(HashtagEntry.get()) != 0 and len(HashtagNumberEntry.get()) != 0:
         # Input is there
-        NoInput.grid_forget()
+        # NoInput.grid_forget()
         # Check if Number is an Integer
         try:
             hashtagNumber = int(HashtagNumberEntry.get())
         # no integer entered
         except ValueError:
-            NotANumber.grid(row=10)
+            error_msg.set("Please enter an integer for the amount of tweets!")
+            Error.grid(row=10)
         else:
-            # Number is integer
-            NotANumber.grid_forget()
             # check if the number is too high
             if hashtagNumber > 2500:
-                MaxTweets.grid(row=10)
+                error_msg.set("Warning! Don't load more than 2500 tweets.")
+                Error.grid(row=10)
             else:
+                error_msg.set("Loading tweets...")
+                Error.grid(row=10)
+                root.update()
                 # try loading the tweets
                 try:
                     # get tweets
                     tweets = twitter.getTweetsByHashtag(HashtagEntry.get(), hashtagNumber)
-                    # an Error occured while loading the tweets
+                # an Error occured while loading the tweets
                 except Exception:
-                    print "Exception while loading tweets. Please try again."
+                    Error.grid_forget()
+                    error_msg.set("Search returned zero tweets. Please try again.")
+                    Error.grid(row=10)
+                    if twitter.API_ERROR_CODE == '429':
+                        Error.grid_forget()
+                        error_msg.set("Warning! You have reached the download limit. Please try again in 10 Minutes.")
+                        Error.grid(row=10)
+                    print "Search returned zero tweets."
                 else:
+                    Error.grid_forget()
+                    if twitter.API_ERROR_CODE == '429':
+                        error_msg.set("Warning! You have reached the Download Limit. Please try again in 10 Minutes.")
+                        Error.grid(row=10)
+                    root.update()
                     # analyze tweets if nothing went wrong
                     calcDisplayVis(tweets, HashtagEntry.get())
 
     else:
-        NoInput.grid(row=10)
+        error_msg.set("Please enter one hashtag and one number!")
+        Error.grid(row=10)
 
 
 # Analyze tweets
@@ -246,13 +261,11 @@ root.width = 150
 # create textvariables
 instr1 = tk.StringVar()
 instr2 = tk.StringVar()
-noIn = tk.StringVar()
-notANum = tk.StringVar()
-maxTweets = tk.StringVar()
 authent = tk.StringVar()
 link = tk.StringVar()
 hashNum = tk.StringVar()
 Hash = tk.StringVar()
+error_msg = tk.StringVar()
 
 # create other variables
 geoDataCheck = tk.BooleanVar()
@@ -260,18 +273,13 @@ geoDataCheck = tk.BooleanVar()
 # edit textvariables
 instr2.set("Please enter the pin below and press 'OK'")
 instr1.set("Use this link to get an authentication pin:")
-noIn.set("Please enter one hashtag and one number!")
-notANum.set("Please enter an integer for the amount of tweets!")
-maxTweets.set("Warning! Don't load more than 2500 tweets.")
 hashNum.set("Tweets Number:")
 Hash.set("Hashtag (without \"#\") :")
 
 # create labels
 label1 = tk.Label(root, textvariable=instr1)
 label2 = tk.Label(root, textvariable=instr2)
-NoInput = tk.Label(root, textvariable=noIn, fg="red")
-NotANumber = tk.Label(root, textvariable=notANum, fg="red")
-MaxTweets = tk.Label(root, textvariable=maxTweets, fg="red")
+Error = tk.Label(root, textvariable=error_msg, fg="red")
 Auth = tk.Label(root, textvariable=authent)
 Hashtag = tk.Label(root, textvariable=Hash)
 HashtagNumber = tk.Label(root, textvariable=hashNum)
