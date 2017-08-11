@@ -5,6 +5,7 @@
 # Fabian Zeiher
 import api as twitter
 import visual
+import gui
 import numpy as np
 import re
 from collections import OrderedDict
@@ -95,7 +96,7 @@ def tryAgain():
 
 
 # OK-Button pressed
-def startSearch():
+def startSearch(event):
     Error.grid_forget()
     # check whether a hashtag is entered
     if len(HashtagEntry.get()) != 0 and len(HashtagNumberEntry.get()) != 0:
@@ -257,6 +258,7 @@ def calcDisplayVis(tweets, searchedHash):
 # UI #
 # create window
 root = tk.Tk()
+root.title("TwitterBot")
 root.width = 150
 # create textvariables
 instr1 = tk.StringVar()
@@ -318,3 +320,12 @@ else:
 
 # start mainloop
 root.mainloop()
+
+# sneak peak
+master = tk.Tk()
+master.title("SneakPeak")
+app = gui.App(master)
+# example keybind
+# TODO: integrate keybindings
+app.button_auth_ok.bind("<Button-1>", startSearch)
+master.mainloop()
