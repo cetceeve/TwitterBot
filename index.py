@@ -50,31 +50,17 @@ def timestamp(searchStr, Hourdic):
 
 # OK Button after pin entry
 def getAuth(event):
-    pin = PinEntry.get()
+    pin = ui.entry_auth_pin.get()
     # check for the right pin -> success path
     if twitter.getToken(pin, token):
-        authent.set("Authentication successful - please enter the hashtag to search for and press 'Search'")
         # make sure TRYAGAIN button is not visible
-        TryAgB.grid_forget()
-        # setup success message
-        Auth.config(fg="forest green")
-        Auth.grid(row=5)
-        # setup search options (Hashtag entry, number entry, search button)
-        Hashtag.grid(row=6, sticky=tk.W)
-        HashtagEntry.grid(row=6, column=0)
-        HashtagNumber.grid(row=7, sticky=tk.W)
-        HashtagNumberEntry.grid(row=7, column=0)
-        GeoDataCheck.grid(row=8)
-        SearchB.grid(row=9)
-        # Grey out OK button (it's not needed anymore)
-        OKButton.config(state=tk.DISABLED)
+        ui.clear_tryagain()
+        # display serch area
+        ui.display_search()
     else:
         # Fail-Path
         # setup retry message and button
-        authent.set("Authentication failed - try again?")
-        Auth.config(fg="red")
-        Auth.grid(row=5)
-        TryAgB.grid(row=6)
+        ui.authentication_error()
 
 
 # RETRY-Button
@@ -82,68 +68,55 @@ def tryAgain(event):
     # make sure the new token is saved GLOBALLY, so the Auth-Function uses the new token
     global token
     # reset UI, get new link -> set new Link
-    TryAgB.grid_forget()
-    Auth.grid_forget()
+    ui.clear_tryagain()
     try:
         Link, token = twitter.getAuthLink()
     except Exception:
-        authent.set("Server Connection failed! Please try again.")
-        Auth.config(fg="red")
-        Auth.grid(row=5)
-        TryAgB.grid(row=6)
+        ui.server_connection_error()
     else:
-        link.set(Link)
+        ui.string_auth_link.set(Link)
 
 
 # OK-Button pressed
 def startSearch(event):
-    Error.grid_forget()
     # check whether a hashtag is entered
-    if len(HashtagEntry.get()) != 0 and len(HashtagNumberEntry.get()) != 0:
+    if len(ui.entry_search_hashtag.get()) != 0 and len(ui.entry_search_amountoftweets.get()) != 0:
         # Input is there
         # NoInput.grid_forget()
         # Check if Number is an Integer
         try:
-            hashtagNumber = int(HashtagNumberEntry.get())
+            hashtagNumber = int(ui.entry_search_amountoftweets.get())
         # no integer entered
         except ValueError:
-            error_msg.set("Please enter an integer for the amount of tweets!")
-            Error.grid(row=10)
+            ui.info_message("Please enter an integer for the amount of tweets!")
         else:
             # check if the number is too high
             if hashtagNumber > 2500:
-                error_msg.set("Warning! Don't load more than 2500 tweets.")
-                Error.grid(row=10)
+                ui.info_message("Warning! Don't load more than 2500 tweets.")
             else:
-                error_msg.set("Loading tweets...")
-                Error.grid(row=10)
+                ui.info_message("Loading tweets...")
                 root.update()
                 # try loading the tweets
                 try:
                     # get tweets
-                    tweets = twitter.getTweetsByHashtag(HashtagEntry.get(), hashtagNumber)
+                    tweets = twitter.getTweetsByHashtag(ui.entry_search_hashtag.get(), hashtagNumber)
                 # an Error occured while loading the tweets
                 except Exception:
-                    Error.grid_forget()
-                    error_msg.set("Search returned zero tweets. Please try again.")
-                    Error.grid(row=10)
+                    ui.info_message("Search returned zero tweets. Please try again.")
                     if twitter.API_ERROR_CODE == '429':
-                        Error.grid_forget()
-                        error_msg.set("Warning! You have reached the download limit. Please try again in 10 Minutes.")
-                        Error.grid(row=10)
+                        ui.label_info_msg.pack_forget()
+                        ui.info_message("Warning! You have reached the download limit. Please try again in 10 Minutes.")
                     print "Search returned zero tweets."
                 else:
-                    Error.grid_forget()
+                    ui.label_info_msg.pack_forget()
                     if twitter.API_ERROR_CODE == '429':
-                        error_msg.set("Warning! You have reached the Download Limit. Please try again in 10 Minutes.")
-                        Error.grid(row=10)
+                        ui.info_message("Warning! You have reached the Download Limit. Please try again in 10 Minutes.")
                     root.update()
                     # analyze tweets if nothing went wrong
-                    calcDisplayVis(tweets, HashtagEntry.get())
+                    calcDisplayVis(tweets, ui.entry_search_hashtag.get())
 
     else:
-        error_msg.set("Please enter one hashtag and one number!")
-        Error.grid(row=10)
+        ui.info_message("Please enter one hashtag and one number!")
 
 
 # Analyze tweets
@@ -215,7 +188,7 @@ def calcDisplayVis(tweets, searchedHash):
     # Visualisierung
     # Instatiert ein Visual-Object, Initiert das Fenster
     # kein input
-    vis = visual.Visual(geoDataCheck.get())
+    vis = visual.Visual(ui.boolean_geodatacheck.get())
 
     # Plot zeigt andere Hashtags die oft zusammen mit dem gesuchten Hashtag geschrieben wurden
     # Für-einen-Datenpunkt:
@@ -242,7 +215,7 @@ def calcDisplayVis(tweets, searchedHash):
     # Als Dataset werden etwa 1000 Koordinatenpunkte <<[Breitengrad, Längengrad]>> benötigt
     # Input: 2D Array of floats <<np.asarray([[0,0],[0,180]])>>
     #    print(repr(np.asarray(coordList)))
-    if geoDataCheck.get():
+    if ui.boolean_geodatacheck.get():
         if not coordList:
             vis.create_globalscatter()
         else:
@@ -260,79 +233,6 @@ def calcDisplayVis(tweets, searchedHash):
 root = tk.Tk()
 root.title("TwitterBot")
 # initialize ui object
-ui = gui.App(root)
-# keybindings
-ui.button_auth_ok.bind("<Button-1>", getAuth)
-ui.button_auth_tryag.bind("<Button-1>", tryAgain)
-ui.button_search.bind("<Button-1>", startSearch)
-# starting screen
-ui.display_auth()
-
-try:
-    Link, token = twitter.getAuthLink()
-except Exception:
-    ui.server_connection_error()
-else:
-    ui.string_auth_link.set(Link)
-
-root.mainloop()
-# create textvariables
-# instr1 = tk.StringVar()
-# instr2 = tk.StringVar()
-# authent = tk.StringVar()
-# link = tk.StringVar()
-# hashNum = tk.StringVar()
-# Hash = tk.StringVar()
-# error_msg = tk.StringVar()
-#
-# # create other variables
-# geoDataCheck = tk.BooleanVar()
-#
-# # edit textvariables
-# instr2.set("Please enter the pin below and press 'OK'")
-# instr1.set("Use this link to get an authentication pin:")
-# hashNum.set("Tweets Number:")
-# Hash.set("Hashtag (without \"#\") :")
-#
-# # create labels
-# label1 = tk.Label(root, textvariable=instr1)
-# label2 = tk.Label(root, textvariable=instr2)
-# Error = tk.Label(root, textvariable=error_msg, fg="red")
-# Auth = tk.Label(root, textvariable=authent)
-# Hashtag = tk.Label(root, textvariable=Hash)
-# HashtagNumber = tk.Label(root, textvariable=hashNum)
-#
-# # create Entries
-# LinkEntry = tk.Entry(root, textvariable=link, width=90, state="readonly")
-# PinEntry = tk.Entry(root, width=20)
-# HashtagEntry = tk.Entry(root, width=30)
-# HashtagNumberEntry = tk.Entry(root, width=30)
-#
-# # create Buttons
-# OKButton = tk.Button(root, text="OK", command=lambda: getAuth())
-# SearchB = tk.Button(root, text="Search!", command=startSearch)
-# TryAgB = tk.Button(root, text="Try Again!", command=lambda: tryAgain())
-#
-# # create Checkbutton
-# GeoDataCheck = tk.Checkbutton(root, text="Display GeoData in 3D Plot", variable=geoDataCheck, onvalue=True, offvalue=False
-#
-# # setup starting window
-# label1.grid(row=0)
-# LinkEntry.grid(row=1)
-# label2.grid(row=2)
-# PinEntry.grid(row=3)
-# OKButton.grid(row=4)
-
-# get a new link/token
-# try:
-#     Link, token = twitter.getAuthLink()
-# except Exception:
-#     authent.set("Server Connection failed! Please try again.")
-#     Auth.config(fg="red")
-#     Auth.grid(row=5)
-#     TryAgB.grid(row=6)
-# else:
-#     link.set(Link)
 ui = gui.App(root)
 # keybindings
 ui.button_auth_ok.bind("<Button-1>", getAuth)

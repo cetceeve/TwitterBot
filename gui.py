@@ -73,7 +73,7 @@ class App(tk.Frame):
         self.string_instr_pin.set("Use this link to get an authentication pin:")
         # search describtion
         self.string_hashtag.set("Hashtag (without \"#\") :")
-        self.string_amountoftweets.set("Tweets Number:")
+        self.string_amountoftweets.set("Tweets Number :")
 
     # frames
     def display_auth(self):
@@ -89,45 +89,45 @@ class App(tk.Frame):
         # clean auth frame
         self.button_auth_ok.config(state=tk.DISABLED)
         self.string_auth_info.set("Authentication successful - please enter the hashtag to search for and press 'Search'")
-        self.string_auth_info.config(fg="forest green")
+        self.label_auth_info.config(fg="forest green")
         self.label_auth_info.pack()
         # display search frame
         self.search_frame.pack()
-        self.label_search_hashtag.grid(row=0)
-        self.label_search_amountoftweets.grid(row=1)
+        self.label_search_hashtag.grid(row=0, sticky=tk.E)
+        self.label_search_amountoftweets.grid(row=1, sticky=tk.E)
         self.entry_search_hashtag.grid(row=0, column=1)
         self.entry_search_amountoftweets.grid(row=1, column=1)
-        self.checkbutton_geodatacheck.grid(row=2)
-        self.button_search.grid(row=3)
+        self.checkbutton_geodatacheck.grid(row=2, column=0, columnspan=2)
+        self.button_search.grid(row=3, column=0, columnspan=2)
         # initialize info_frame
         self.info_frame.pack()
-        self.label_info_msg.pack()
 
     # errors and warnings
     def server_connection_error(self):
         self.string_auth_info.set("Server Connection failed! Please try again.")
         self.label_auth_info.config(fg='red')
         # packer
-        self.button_auth_ok.pack_forget()
-        self.button_auth_tryag.pack()
+        self.button_auth_ok.config(state=tk.DISABLED)
         self.label_auth_info.pack()
+        self.button_auth_tryag.pack()
 
     def authentication_error(self):
         self.string_auth_info.set("Authentication failed! Please try again.")
         self.label_auth_info.config(fg='red')
         # packer
-        self.button_auth_ok.pack_forget()
-        self.button_auth_tryag.pack()
+        self.button_auth_ok.config(state=tk.DISABLED)
         self.label_auth_info.pack()
+        self.button_auth_tryag.pack()
 
     # clear ui elements
     def clear_tryagain(self):
-        self.button_auth_tryag.grid_forget()
-        self.label_auth_info.grid_forget()
-        self.button_auth_ok.pack()
+        self.button_auth_ok.config(state=tk.ACTIVE)
+        self.button_auth_tryag.pack_forget()
+        self.label_auth_info.pack_forget()
 
     # info message
     def info_message(self, message):
+        self.label_info_msg.pack_forget()
         self.string_info_msg.set(message)
         self.label_info_msg.config(fg='red')
-        # self.label_info_msg.pack()
+        self.label_info_msg.pack()
