@@ -49,7 +49,7 @@ def timestamp(searchStr, Hourdic):
 
 
 # OK Button after pin entry
-def getAuth():
+def getAuth(event):
     pin = PinEntry.get()
     # check for the right pin -> success path
     if twitter.getToken(pin, token):
@@ -325,7 +325,16 @@ root.mainloop()
 master = tk.Tk()
 master.title("SneakPeak")
 app = gui.App(master)
+app.display_auth()
+# testing functionality
+try:
+    Link, token = twitter.getAuthLink()
+except Exception:
+    app.server_connection_error()
+else:
+    app.string_auth_link.set(Link)
+
 # example keybind
 # TODO: integrate keybindings
-app.button_auth_ok.bind("<Button-1>", startSearch)
+app.button_auth_ok.bind("<Button-1>", getAuth)
 master.mainloop()
