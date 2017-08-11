@@ -78,7 +78,7 @@ def getAuth(event):
 
 
 # RETRY-Button
-def tryAgain():
+def tryAgain(event):
     # make sure the new token is saved GLOBALLY, so the Auth-Function uses the new token
     global token
     # reset UI, get new link -> set new Link
@@ -259,82 +259,93 @@ def calcDisplayVis(tweets, searchedHash):
 # create window
 root = tk.Tk()
 root.title("TwitterBot")
-root.width = 150
+# initialize ui object
+ui = gui.App(root)
+# keybindings
+ui.button_auth_ok.bind("<Button-1>", getAuth)
+ui.button_auth_tryag.bind("<Button-1>", tryAgain)
+ui.button_search.bind("<Button-1>", startSearch)
+# starting screen
+ui.display_auth()
+
+try:
+    Link, token = twitter.getAuthLink()
+except Exception:
+    ui.server_connection_error()
+else:
+    ui.string_auth_link.set(Link)
+
+root.mainloop()
 # create textvariables
-instr1 = tk.StringVar()
-instr2 = tk.StringVar()
-authent = tk.StringVar()
-link = tk.StringVar()
-hashNum = tk.StringVar()
-Hash = tk.StringVar()
-error_msg = tk.StringVar()
-
-# create other variables
-geoDataCheck = tk.BooleanVar()
-
-# edit textvariables
-instr2.set("Please enter the pin below and press 'OK'")
-instr1.set("Use this link to get an authentication pin:")
-hashNum.set("Tweets Number:")
-Hash.set("Hashtag (without \"#\") :")
-
-# create labels
-label1 = tk.Label(root, textvariable=instr1)
-label2 = tk.Label(root, textvariable=instr2)
-Error = tk.Label(root, textvariable=error_msg, fg="red")
-Auth = tk.Label(root, textvariable=authent)
-Hashtag = tk.Label(root, textvariable=Hash)
-HashtagNumber = tk.Label(root, textvariable=hashNum)
-
-# create Entries
-LinkEntry = tk.Entry(root, textvariable=link, width=90, state="readonly")
-PinEntry = tk.Entry(root, width=20)
-HashtagEntry = tk.Entry(root, width=30)
-HashtagNumberEntry = tk.Entry(root, width=30)
-
-# create Buttons
-OKButton = tk.Button(root, text="OK", command=lambda: getAuth())
-SearchB = tk.Button(root, text="Search!", command=startSearch)
-TryAgB = tk.Button(root, text="Try Again!", command=lambda: tryAgain())
-
-# create Checkbutton
-GeoDataCheck = tk.Checkbutton(root, text="Display GeoData in 3D Plot", variable=geoDataCheck, onvalue=True, offvalue=False)
-
-# setup starting window
-label1.grid(row=0)
-LinkEntry.grid(row=1)
-label2.grid(row=2)
-PinEntry.grid(row=3)
-OKButton.grid(row=4)
+# instr1 = tk.StringVar()
+# instr2 = tk.StringVar()
+# authent = tk.StringVar()
+# link = tk.StringVar()
+# hashNum = tk.StringVar()
+# Hash = tk.StringVar()
+# error_msg = tk.StringVar()
+#
+# # create other variables
+# geoDataCheck = tk.BooleanVar()
+#
+# # edit textvariables
+# instr2.set("Please enter the pin below and press 'OK'")
+# instr1.set("Use this link to get an authentication pin:")
+# hashNum.set("Tweets Number:")
+# Hash.set("Hashtag (without \"#\") :")
+#
+# # create labels
+# label1 = tk.Label(root, textvariable=instr1)
+# label2 = tk.Label(root, textvariable=instr2)
+# Error = tk.Label(root, textvariable=error_msg, fg="red")
+# Auth = tk.Label(root, textvariable=authent)
+# Hashtag = tk.Label(root, textvariable=Hash)
+# HashtagNumber = tk.Label(root, textvariable=hashNum)
+#
+# # create Entries
+# LinkEntry = tk.Entry(root, textvariable=link, width=90, state="readonly")
+# PinEntry = tk.Entry(root, width=20)
+# HashtagEntry = tk.Entry(root, width=30)
+# HashtagNumberEntry = tk.Entry(root, width=30)
+#
+# # create Buttons
+# OKButton = tk.Button(root, text="OK", command=lambda: getAuth())
+# SearchB = tk.Button(root, text="Search!", command=startSearch)
+# TryAgB = tk.Button(root, text="Try Again!", command=lambda: tryAgain())
+#
+# # create Checkbutton
+# GeoDataCheck = tk.Checkbutton(root, text="Display GeoData in 3D Plot", variable=geoDataCheck, onvalue=True, offvalue=False
+#
+# # setup starting window
+# label1.grid(row=0)
+# LinkEntry.grid(row=1)
+# label2.grid(row=2)
+# PinEntry.grid(row=3)
+# OKButton.grid(row=4)
 
 # get a new link/token
+# try:
+#     Link, token = twitter.getAuthLink()
+# except Exception:
+#     authent.set("Server Connection failed! Please try again.")
+#     Auth.config(fg="red")
+#     Auth.grid(row=5)
+#     TryAgB.grid(row=6)
+# else:
+#     link.set(Link)
+ui = gui.App(root)
+# keybindings
+ui.button_auth_ok.bind("<Button-1>", getAuth)
+ui.button_auth_tryag.bind("<Button-1>", tryAgain)
+ui.button_search.bind("<Button-1>", startSearch)
+# starting screen
+ui.display_auth()
+
 try:
     Link, token = twitter.getAuthLink()
 except Exception:
-    authent.set("Server Connection failed! Please try again.")
-    Auth.config(fg="red")
-    Auth.grid(row=5)
-    TryAgB.grid(row=6)
+    ui.server_connection_error()
 else:
-    link.set(Link)
+    ui.string_auth_link.set(Link)
 
-# start mainloop
 root.mainloop()
-
-# sneak peak
-master = tk.Tk()
-master.title("SneakPeak")
-app = gui.App(master)
-app.display_auth()
-# testing functionality
-try:
-    Link, token = twitter.getAuthLink()
-except Exception:
-    app.server_connection_error()
-else:
-    app.string_auth_link.set(Link)
-
-# example keybind
-# TODO: integrate keybindings
-app.button_auth_ok.bind("<Button-1>", getAuth)
-master.mainloop()

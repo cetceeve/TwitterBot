@@ -101,6 +101,7 @@ class App(tk.Frame):
         self.button_search.grid(row=3)
         # initialize info_frame
         self.info_frame.pack()
+        self.label_info_msg.pack()
 
     # errors and warnings
     def server_connection_error(self):
@@ -129,4 +130,4 @@ class App(tk.Frame):
     def info_message(self, message):
         self.string_info_msg.set(message)
         self.label_info_msg.config(fg='red')
-        self.label_info_msg.pack()
+        # self.label_info_msg.pack()
