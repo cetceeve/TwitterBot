@@ -67,14 +67,14 @@ def getAuth(event):
 def tryAgain(event):
     # make sure the new token is saved GLOBALLY, so the Auth-Function uses the new token
     global token
-    # reset UI, get new link -> set new Link
+    # reset UI, get new link -> set new link
     ui.clear_tryagain()
     try:
-        Link, token = twitter.getAuthLink()
+        auth_link, token = twitter.getAuthLink()
     except Exception:
         ui.server_connection_error()
     else:
-        ui.string_auth_link.set(Link)
+        ui.string_auth_link.set(auth_link)
 
 
 # OK-Button pressed
@@ -158,8 +158,15 @@ def calcDisplayVis(tweets, searchedHash):
     hashtags = list()
     hashtagNumbers = list()
     count = 0
-    # delete first Hashtag
-    HashtagDic.pop("#" + searchedHash)
+
+    # error can be thrown because the api is not case sensitive but we are
+    try:
+        # delete first Hashtag
+        HashtagDic.pop("#" + searchedHash)
+    except KeyError:
+        # leave it as is
+        pass
+
     # sort used hashtags after most used hashtags and create a list of the top 5
     for x in sorted(HashtagDic, key=HashtagDic.get, reverse=True):
         hashtags.append(x)
@@ -242,10 +249,10 @@ ui.button_search.bind("<Button-1>", startSearch)
 ui.display_auth()
 
 try:
-    Link, token = twitter.getAuthLink()
+    auth_link, token = twitter.getAuthLink()
 except Exception:
     ui.server_connection_error()
 else:
-    ui.string_auth_link.set(Link)
+    ui.string_auth_link.set(auth_link)
 
 root.mainloop()
