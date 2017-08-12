@@ -131,3 +131,10 @@ class App(tk.Frame):
         self.string_info_msg.set(message)
         self.label_info_msg.config(fg='red')
         self.label_info_msg.pack()
+
+    # info on loading progress
+    def info_load(self, runner):
+        self.label_info_msg.pack_forget
+        self.string_info_msg.set('Loading: {}/{}'.format(runner, self.entry_search_amountoftweets.get()))
+        self.label_info_msg.config(fg='black')
+        self.label_info_msg.pack()

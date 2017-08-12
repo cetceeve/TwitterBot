@@ -53,7 +53,7 @@ def getToken(pin, request_token):
         return False
 
 
-def getTweetsByHashtag(q, tweetNumber, geo=True, username=True, timestamp=True):
+def getTweetsByHashtag(q, tweetNumber, qu1, qu2, qu3, geo=True, username=True, timestamp=True):
     global API_ERROR_CODE
     query = '%23' + q
 
@@ -81,6 +81,7 @@ def getTweetsByHashtag(q, tweetNumber, geo=True, username=True, timestamp=True):
             tweet["timestamp"] = str(status.created_at.strftime('%a %b %d %H:%M:%S'))
             tweet_list.append(tweet)
             runner += 1
+            qu2.put(runner)
             print ('\rLoading: {}/{}'.format(runner, tweetNumber), end='')
     # catch errors
     except Exception as error:
@@ -91,6 +92,6 @@ def getTweetsByHashtag(q, tweetNumber, geo=True, username=True, timestamp=True):
         API_ERROR_CODE = '000'
         print ("\nDownload successful!\n")
     finally:
-        if not tweet_list:
-            raise Exception
-        return tweet_list
+        qu3.put(runner)
+        qu2.put(tweetNumber)
+        qu1.put(tweet_list)

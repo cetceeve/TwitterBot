@@ -6,6 +6,8 @@
 import api as twitter
 import visual
 import gui
+import threading
+import Queue
 import numpy as np
 import re
 from collections import OrderedDict
@@ -81,8 +83,6 @@ def tryAgain(event):
 def startSearch(event):
     # check whether a hashtag is entered
     if len(ui.entry_search_hashtag.get()) != 0 and len(ui.entry_search_amountoftweets.get()) != 0:
-        # Input is there
-        # NoInput.grid_forget()
         # Check if Number is an Integer
         try:
             hashtagNumber = int(ui.entry_search_amountoftweets.get())
@@ -94,23 +94,41 @@ def startSearch(event):
             if hashtagNumber > 2500:
                 ui.info_message("Warning! Don't load more than 2500 tweets.")
             else:
-                ui.info_message("Loading tweets...")
-                root.update()
                 # try loading the tweets
                 try:
                     # get tweets
-                    tweets = twitter.getTweetsByHashtag(ui.entry_search_hashtag.get(), hashtagNumber)
+                    searchHashtag = ui.entry_search_hashtag.get()
+                    qu1 = Queue.Queue()
+                    qu2 = Queue.Queue()
+                    qu3 = Queue.Queue()
+                    background_thread = threading.Thread(target=twitter.getTweetsByHashtag,
+                                                         args=(searchHashtag, hashtagNumber, qu1, qu2, qu3))
+                    background_thread.start()
+                    print "open background thread"
+                    runner = 0
+                    while runner < hashtagNumber:
+                        runner = qu2.get()
+                        ui.info_load(runner)
+                        root.update()
+                    trueAmount = qu3.get()
+                    tweets = qu1.get()
+                    background_thread.join()
+                    print "close background thread"
+                    if not tweets:
+                        raise Exception("Search returned zero tweets. Please try again.")
                 # an Error occured while loading the tweets
-                except Exception:
-                    ui.info_message("Search returned zero tweets. Please try again.")
+                except Exception as e:
+                    ui.info_message(e)
                     if twitter.API_ERROR_CODE == '429':
-                        ui.label_info_msg.pack_forget()
                         ui.info_message("Warning! You have reached the download limit. Please try again in 10 Minutes.")
                     print "Search returned zero tweets."
+                    root.update()
                 else:
-                    ui.label_info_msg.pack_forget()
+                    ui.info_message("Successfully finished loading! {} tweets were found.".format(trueAmount))
+                    ui.label_info_msg.config(fg='forest green')
                     if twitter.API_ERROR_CODE == '429':
-                        ui.info_message("Warning! You have reached the Download Limit. Please try again in 10 Minutes.")
+                        ui.info_message(
+                            "Warning! You have reached the Download Limit. Loaded {} tweets successfully.".format(trueAmount))
                     root.update()
                     # analyze tweets if nothing went wrong
                     calcDisplayVis(tweets, ui.entry_search_hashtag.get())
