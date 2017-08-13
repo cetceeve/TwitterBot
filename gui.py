@@ -5,9 +5,6 @@
 import Tkinter as tk
 
 
-# root = Tk()
-# app = App(root)
-# root.mainloop()
 class App(tk.Frame):
     def __init__(self, root):
         # frames
@@ -101,6 +98,7 @@ class App(tk.Frame):
         self.button_search.grid(row=3, column=0, columnspan=2)
         # initialize info_frame
         self.info_frame.pack()
+        self.label_info_msg.pack()
 
     # errors and warnings
     def server_connection_error(self):
@@ -126,15 +124,6 @@ class App(tk.Frame):
         self.label_auth_info.pack_forget()
 
     # info message
-    def info_message(self, message):
-        self.label_info_msg.pack_forget()
+    def info_message(self, message, color='red'):
         self.string_info_msg.set(message)
-        self.label_info_msg.config(fg='red')
-        self.label_info_msg.pack()
-
-    # info on loading progress
-    def info_load(self, runner):
-        self.label_info_msg.pack_forget
-        self.string_info_msg.set('Loading: {}/{}'.format(runner, self.entry_search_amountoftweets.get()))
-        self.label_info_msg.config(fg='black')
-        self.label_info_msg.pack()
+        self.label_info_msg.config(fg=color)

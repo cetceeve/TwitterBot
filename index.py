@@ -108,7 +108,7 @@ def startSearch(event):
                     runner = 0
                     while runner < hashtagNumber:
                         runner = qu2.get()
-                        ui.info_load(runner)
+                        ui.info_message('Loading: {}/{}'.format(runner, hashtagNumber), 'blue')
                         root.update()
                     trueAmount = qu3.get()
                     tweets = qu1.get()
@@ -118,17 +118,21 @@ def startSearch(event):
                         raise Exception("Search returned zero tweets. Please try again.")
                 # an Error occured while loading the tweets
                 except Exception as e:
-                    ui.info_message(e)
-                    if twitter.API_ERROR_CODE == '429':
+                    if twitter.API_ERROR_CODE == '000':
+                        ui.info_message(e, 'blue')
+                        print "Search returned zero tweets."
+                    elif twitter.API_ERROR_CODE == '429':
                         ui.info_message("Warning! You have reached the download limit. Please try again in 10 Minutes.")
-                    print "Search returned zero tweets."
+                    else:
+                        ui.info_message("Error! Something went wrong while trying to load the tweets.")
                     root.update()
                 else:
-                    ui.info_message("Successfully finished loading! {} tweets were found.".format(trueAmount))
-                    ui.label_info_msg.config(fg='forest green')
+                    ui.info_message("Successfully finished loading! {} tweets were found.".format(trueAmount), 'forest green')
                     if twitter.API_ERROR_CODE == '429':
                         ui.info_message(
-                            "Warning! You have reached the Download Limit. Loaded {} tweets successfully.".format(trueAmount))
+                            "Warning! You have reached the Download Limit. Loaded {} tweets successfully.".format(trueAmount), 'orange')
+                    elif twitter.API_ERROR_CODE != '000':
+                        ui.info_message("Warning! Something went wrong. Loaded {} tweets successfully.".format(trueAmount), 'orange')
                     root.update()
                     # analyze tweets if nothing went wrong
                     calcDisplayVis(tweets, ui.entry_search_hashtag.get())

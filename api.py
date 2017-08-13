@@ -86,11 +86,11 @@ def getTweetsByHashtag(q, tweetNumber, qu1, qu2, qu3, geo=True, username=True, t
     # catch errors
     except Exception as error:
         API_ERROR_CODE = str(error)[-3:]
-        print ('\nException while loading tweets:', error)
+        print (' >> Exception while loading tweets:', error)
     # If everything worked, give back the tweetlist
     else:
         API_ERROR_CODE = '000'
-        print ("\nDownload successful!\n")
+        print (" >> Download successful!")
     finally:
         qu3.put(runner)
         qu2.put(tweetNumber)
