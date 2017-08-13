@@ -54,10 +54,13 @@ def getToken(pin, request_token):
 
 
 def getTweetsByHashtag(q, tweetNumber, qu1, qu2, qu3, geo=True, username=True, timestamp=True):
+    # API_ERROR_CODE needs to be a global variable because it is used in index.py
     global API_ERROR_CODE
+    # construct the query
     query = '%23' + q
-
+    # initialize the tweet_list
     tweet_list = list()
+    # track the amount of returned tweets
     runner = 0
     # try loading the tweets
     try:
@@ -81,17 +84,24 @@ def getTweetsByHashtag(q, tweetNumber, qu1, qu2, qu3, geo=True, username=True, t
             tweet["timestamp"] = str(status.created_at.strftime('%a %b %d %H:%M:%S'))
             tweet_list.append(tweet)
             runner += 1
+            # give new runner value to the queue
             qu2.put(runner)
             print ('\rLoading: {}/{}'.format(runner, tweetNumber), end='')
     # catch errors
     except Exception as error:
+        # the error message always contains the html error code at the end
         API_ERROR_CODE = str(error)[-3:]
         print (' >> Exception while loading tweets:', error)
-    # If everything worked, give back the tweetlist
     else:
+        # If everything worked make sure the error code is neutral
         API_ERROR_CODE = '000'
         print (" >> Download successful!")
+    # always give something to the queues in order to close the background thread
     finally:
+        # the runner resembles the true amount of loaded tweets, it now goes into queue 3
         qu3.put(runner)
+        # this closes a while loop in the main thread
+        # this is ABSOLUTLY NECESSARY to close the background thread
         qu2.put(tweetNumber)
+        # we need the tweet list back, no matter how many tweets are in it
         qu1.put(tweet_list)
