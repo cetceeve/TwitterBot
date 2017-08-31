@@ -6,13 +6,16 @@
 import api as twitter
 import visual
 import gui
+# standard lib
+from __future__ import print_function
 import threading
 import Queue
-import numpy as np
 import re
 from collections import OrderedDict
 import Tkinter as tk
 import ast
+# add packs
+import numpy as np
 
 
 # OK Button after pin entry
@@ -81,7 +84,7 @@ def load_tweets(searchHashtag, tweetNumber):
 
     # start the background thread
     background_thread.start()
-    print "open background thread"
+    print("open background thread")
     # runner is equal to the runner running in the background thread
     runner = 0
     # this while loop is closed from the background thread!!!
@@ -101,14 +104,14 @@ def load_tweets(searchHashtag, tweetNumber):
     tweets = qu1.get()
     # close background thread
     background_thread.join()
-    print "close background thread"
+    print("close background thread")
 
     # check if there were any tweets retuned
     if not tweets:
         # if the getTweetsByHashtag function did not throw any errors then the hastag does not exist
         if twitter.API_ERROR_CODE == '000':
             ui.info_message("Hashtag does not excist. Please try something else.", 'blue')
-            print "Search returned zero tweets."
+            print("Search returned zero tweets.")
         # if there are no tweets and getTweetsByHashtag threw an error with code 429 the user has reached the download limit in a previous search
         elif twitter.API_ERROR_CODE == '429':
             ui.info_message("Warning! You have reached the download limit. Please try again in 10 Minutes.")

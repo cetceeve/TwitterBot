@@ -6,10 +6,11 @@
 # Fabian Zeiher
 from __future__ import print_function
 import urlparse
-import oauth2 as oauth
-import tweepy
 import datetime
 import json
+# add packs
+import oauth2 as oauth
+import tweepy
 
 API_ERROR_CODE = '000'
 
@@ -49,7 +50,7 @@ def getToken(pin, request_token):
     try:
         auth.set_access_token(access_token['oauth_token'], access_token['oauth_token_secret'])
         return True
-    except Exception, e:
+    except Exception:
         return False
 
 
