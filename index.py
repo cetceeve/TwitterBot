@@ -3,11 +3,12 @@
 # Github: https://github.com/cetceeve/TwitterBot
 # Anna Lena Sporrer
 # Fabian Zeiher
+from __future__ import print_function
 import api as twitter
 import visual
 import gui
 # standard lib
-from __future__ import print_function
+# from __future__ import print_function
 import threading
 import Queue
 import re
